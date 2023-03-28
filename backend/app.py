@@ -1,11 +1,14 @@
 from flask import Flask, request
+import json
 
 app = Flask(__name__)
 
 @app.route('/hello', methods=['GET'])
 def hello():
     name = request.args.get('name')
-    return f'Hello, {name}!'
+    password = request.args.get('password')
+    thing = { "name": name, "password": password }
+    return json.dumps(thing)
 
 if __name__ == '__main__':
     app.run(debug=True)
