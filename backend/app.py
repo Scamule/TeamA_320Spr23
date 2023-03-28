@@ -7,7 +7,7 @@ app = Flask(__name__)
 def hello():
     name = request.args.get('name')
     password = request.args.get('password')
-    thing = { "name": name, "password": password }
+    thing = { "name": name }
     return json.dumps(thing)
 
 if __name__ == '__main__':
