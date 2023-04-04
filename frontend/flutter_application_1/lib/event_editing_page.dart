@@ -79,12 +79,10 @@ class _EventEditingPageState extends State<EventEditingPage> {
   Widget buildDateTime() => Column(
         children: [buildFrom()],
       );
- 
+
   Widget buildFrom() => Row(
-    children: [
-      //Expanded(child: buildDropdown(text: fromDate),)
-    ],);
-
-
-  
+        children: [
+          //Expanded(child: buildDropdown(text: fromDate),)
+        ],
+      );
 }
