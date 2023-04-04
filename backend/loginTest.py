@@ -20,7 +20,7 @@ def userIndex():
 
 @app.route('/user', methods=['GET'])
 def userCreate():
-    return user.registerUser(request.args.get('email'), request.args.get('password'))
+    return user.registerUser(request.args.get('email'), request.args.get('password'), request.args.get('userid'))
 
 
 
