@@ -59,13 +59,65 @@ def get_class(all_class_data: dict, class_number: str):
     #corresponding class number and all the stored data for that class
     return all_class_data[class_number]
 
+def get_time(response,course_name):
+    course_obj = response
+    ret_arr = []
+    if course_obj == '':
+        return ret_arr
+    offerings = course_obj['offerings']
+    num_offerings = len(offerings)
+    if num_offerings==0:
+        return ret_arr
+    for i in range(0,num_offerings):
+        offering_obj = offerings[i]
+        url = offering_obj['url']
+        resp = requests.get(url).json()
+        secs = resp['sections']
+        for j in range(0,len(secs)):
+            section_obj = secs[j]
+            url2 = section_obj['url']
+            resp2 = requests.get(url2).json()
+            class_no = resp2['spire_id']
+            meeting_info = resp2['meeting_information'][0]
+            schd = meeting_info['schedule']
+            schd['class_no'] = class_no
+            ret_arr.append(schd)
+    return ret_arr
+
+def print_course_offerings(all_class_data: list, course_name: str):
+
+    response = get_class(all_class_data, course_name)
+
+    ret_arr = get_time(response=response,course_name=course_name)
+
+    if(len(ret_arr)==0):
+        print("Course Not offered this semester")
+    else:
+        print("Available classes for " + course_name + " are:")
+        for i in range(0,len(ret_arr)):
+            obj = ret_arr[i]
+            days_arr = obj['days']
+            listToStr = ' '.join([str(elem) for elem in days_arr])
+            print("Lecture no: " + obj['class_no'] + " at " + obj['start_time'] + "-" + obj['end_time'] + " on days: " + listToStr)
+
+
+
 def main():
+    #using api url to get all the class data we want
     api_url = "http://spire-api.melanson.dev/courses/?page=1&search=COMPSCI"
     all_class_data = sort_classes(api_url)
+
+    #test print statements
     #print(all_class_data)
     #print(get_offerings(all_class_data, '220'))
-    print(get_class(all_class_data, '220'))
+    #print(get_class(all_class_data, '220'))
 
-    return 'done'
+    #test variables
+    course_name = '220'
+    #response = get_class(all_class_data, course_name)
+
+    print_course_offerings(all_class_data, course_name)
+
+    return print('\nfinished\n')
 
 main()
