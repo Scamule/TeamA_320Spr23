@@ -7,8 +7,17 @@ def get_class(class_id: int):
 
     response = requests.get(api_url)
     response = response.json()
+    print('hello')
 
-    print(response['results'][0])
+    #classes that api returns
+    classes_len = len(response['results'])
+    classes = response['results']
+
+    #looping through classes
+    for c in classes:
+        print(c)
+
+    #print(response['results'][0])
 
     return class_data
 
