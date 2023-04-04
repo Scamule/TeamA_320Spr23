@@ -15,7 +15,7 @@ def get_class(class_id: int):
 
     #looping through classes
     for c in classes:
-        print(c)
+        print(c.get('id'))
 
     #print(response['results'][0])
 
