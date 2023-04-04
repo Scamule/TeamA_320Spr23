@@ -15,7 +15,7 @@ class User:
                 'Password': password
             }
         )
-        return(response);
+        return(response)
 
     def getAllUsers(self):
         response = self.table.scan()
