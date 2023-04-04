@@ -49,10 +49,22 @@ def parse_class(c: dict):
     
     return class_data
 
+def get_offerings(all_class_data: dict, class_number: str):
+    #takes in a class number and dictionary of classes and returns the offerings for the 
+    #corresponding class number in the all class data dictionary
+    return all_class_data[class_number].get('offerings')
+
+def get_class(all_class_data: dict, class_number: str):
+    #takes in a class number and dictionary of classes and returns the class for the 
+    #corresponding class number and all the stored data for that class
+    return all_class_data[class_number]
+
 def main():
     api_url = "http://spire-api.melanson.dev/courses/?page=1&search=COMPSCI"
     all_class_data = sort_classes(api_url)
-    print(all_class_data)
+    #print(all_class_data)
+    #print(get_offerings(all_class_data, '220'))
+    print(get_class(all_class_data, '220'))
 
     return 'done'
 
