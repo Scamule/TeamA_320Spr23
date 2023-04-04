@@ -3,10 +3,10 @@ class User:
         self.dyn_resource = dyn_resource
         self.table = dyn_resource.Table('Users')
 
-    def registerUser(self, email, password):
+    def registerUser(self, email, password, userid):
         response = self.table.put_item(
             Item={
-                'Student_ID': "444",
+                'Student_ID': userid,
                 'Cur_Courses': None,
                 'Email': email,
                 'First_Name': "Test",
