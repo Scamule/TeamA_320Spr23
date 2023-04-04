@@ -14,20 +14,17 @@ def sort_classes(api_url: str):
     classes_len = len(response['results'])
     classes = response['results']
 
-    #looping through classes
-    counter = 0
-
-    for i in range(15):
+    #looping through classes, and sending each one to parse_class to be parsed
+    while True:
         for c in classes:
             parse_class(c)
-            counter += 1
-        if(i != 14):
-            api_url = response['next']
-            response = requests.get(api_url)
-            response = response.json()
-            classes = response['results']
+        if(response['next'] is None):
+            break
+        api_url = response['next']
+        response = requests.get(api_url)
+        response = response.json()
+        classes = response['results']    
 
-    print(counter)
     return class_data
 
 def parse_class(c: dict):
@@ -46,7 +43,7 @@ def parse_class(c: dict):
         class_data['offerings'] = c.get('offerings')
 
     print(class_data)
-    print('\n\n')
+    print('\n')
     
     return 'buns'
 
