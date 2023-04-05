@@ -1,33 +1,16 @@
 import requests
 import json
 
-def sort_classes(api_url: str):
+def get_class(class_number: str):
     #pulls a specific class from the set of all classes returned by the api.
+    api_url = 'http://spire-api.melanson.dev/courses/COMPSCI%20'
 
-    all_class_data = {}
-    class_data = {}
-    #api_url = "http://spire-api.melanson.dev/courses/?page=1&search=COMPSCI"
+    api_url = api_url + class_number + '/'
 
     response = requests.get(api_url)
     response = response.json()
 
-    #classes that api returns
-    classes_len = len(response['results'])
-    classes = response['results']
-
-    #looping through classes, and sending each one to parse_class to be parsed
-    while True:
-        for c in classes:
-            class_data = parse_class(c)
-            all_class_data[class_data['class_number']] = class_data
-        if(response['next'] is None):
-            break
-        api_url = response['next']
-        response = requests.get(api_url)
-        response = response.json()
-        classes = response['results']    
-
-    return all_class_data
+    return parse_class(response)
 
 def parse_class(c: dict):
     #going to parse the class data returned from get_class. Sort it into a data model TBD. Make the data for each
@@ -49,18 +32,9 @@ def parse_class(c: dict):
     
     return class_data
 
-def get_offerings(all_class_data: dict, class_number: str):
-    #takes in a class number and dictionary of classes and returns the offerings for the 
-    #corresponding class number in the all class data dictionary
-    return all_class_data[class_number].get('offerings')
-
-def get_class(all_class_data: dict, class_number: str):
-    #takes in a class number and dictionary of classes and returns the class for the 
-    #corresponding class number and all the stored data for that class
-    return all_class_data[class_number]
-
-def get_time(response,course_name):
+def get_time(response, course_name):
     course_obj = response
+    print(response)
     ret_arr = []
     if course_obj == '':
         return ret_arr
@@ -84,9 +58,9 @@ def get_time(response,course_name):
             ret_arr.append(schd)
     return ret_arr
 
-def print_course_offerings(all_class_data: list, course_name: str):
+def print_course_offerings(course_name: str):
 
-    response = get_class(all_class_data, course_name)
+    response = get_class(course_name)
 
     ret_arr = get_time(response=response,course_name=course_name)
 
@@ -105,7 +79,6 @@ def print_course_offerings(all_class_data: list, course_name: str):
 def main():
     #using api url to get all the class data we want
     api_url = "http://spire-api.melanson.dev/courses/?page=1&search=COMPSCI"
-    all_class_data = sort_classes(api_url)
 
     #test print statements
     #print(all_class_data)
@@ -116,7 +89,7 @@ def main():
     course_name = '220'
     #response = get_class(all_class_data, course_name)
 
-    print_course_offerings(all_class_data, course_name)
+    print_course_offerings(course_name)
 
     return print('\nfinished\n')
 
