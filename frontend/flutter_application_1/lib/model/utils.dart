@@ -20,5 +20,4 @@ class Utils {
 
     return '$time';
   }
-
 }
