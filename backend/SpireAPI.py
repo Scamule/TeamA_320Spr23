@@ -1,15 +1,33 @@
 import requests
 import json
+import time
+
+# Returns a dictionary object, and None if failed
+# @param:url is the url to request the json from
+# @param:testing is used to return the fail_counter
+def get_url_data(url:str, testing:bool=False):
+    fail_limit = 10
+    # wait_time is in milliseconds
+    wait_time = 20
+    for fail_counter in range(fail_limit):
+        try:
+            # Try and get the data
+            obj = requests.get(url).json()
+            # Success
+            return obj if not testing else { "obj": obj, "fail_counter": fail_counter }
+        except:
+            # Failed to get the data
+            time.sleep(wait_time / 1000)
+    # Failed to get the data 
+    raise ValueError('Could not fetch data from API')
 
 def get_class(class_number: str):
     #pulls a specific class from the set of all classes returned by the api.
     api_url = 'http://spire-api.melanson.dev/courses/COMPSCI%20'
-
-    api_url = api_url + class_number + '/'
-
-    response = requests.get(api_url)
-    response = response.json()
-
+    api_url += class_number + '/'
+    
+    response = get_url_data(api_url)
+    
     return parse_class(response)
 
 def parse_class(c: dict):
@@ -45,12 +63,12 @@ def get_time(response, course_name):
     for i in range(0,num_offerings):
         offering_obj = offerings[i]
         url = offering_obj['url']
-        resp = requests.get(url).json()
+        resp = get_url_data(url)
         secs = resp['sections']
         for j in range(0,len(secs)):
             section_obj = secs[j]
             url2 = section_obj['url']
-            resp2 = requests.get(url2).json()
+            resp2 = get_url_data(url2)
             class_no = resp2['spire_id']
             meeting_info = resp2['meeting_information'][0]
             schd = meeting_info['schedule']
@@ -93,4 +111,5 @@ def main():
 
     return print('\nfinished\n')
 
-main()
+if __name__ == '__main__':
+    main()
