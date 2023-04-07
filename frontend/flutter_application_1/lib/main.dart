@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_application_1/event_adding.dart';
 import 'package:flutter_application_1/home_page.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +25,7 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
+//basic app bar and lower icons
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
   @override

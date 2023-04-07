@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_application_1/event_adding.dart';
 import 'package:flutter_application_1/model/event.dart';
 import 'package:flutter_application_1/model/utils.dart';
-import 'package:provider/provider.dart';
 
 class EventEditingPage extends StatefulWidget {
   final Event? event;
@@ -141,7 +141,8 @@ class _EventEditingPageState extends State<EventEditingPage> {
       ]);
 
   Future pickFromDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(fromDate, pickDate: pickDate, firstDate: pickDate ? fromDate : null);
+    final date = await pickDateTime(fromDate,
+        pickDate: pickDate, firstDate: pickDate ? fromDate : null);
     if (date == null) {
       return;
     }
@@ -193,8 +194,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
 
       final date =
           DateTime(initialDate.year, initialDate.month, initialDate.day);
-      final time =
-          Duration(hours: timeOfDay.hour, minutes: timeOfDay.minute);
+      final time = Duration(hours: timeOfDay.hour, minutes: timeOfDay.minute);
       return date.add(time);
     }
   }
