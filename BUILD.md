@@ -18,4 +18,12 @@ cd TeamA_320Spr23
 
     Download Python from python.org
     Then download all dependencies (boto3, flask, json, request)
+    
+    Generate .env in backend directory with valid credentials for database access
+    '''
+    {
+    "database_key": "Bob", 
+    "database_secret": "English"
+    }
+    '''
     Then run app.py
