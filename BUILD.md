@@ -20,10 +20,10 @@ cd TeamA_320Spr23
     Then download all dependencies (boto3, flask, json, request)
     
     Generate .env in backend directory with valid credentials for database access
-    '''
+    ```
     {
     "database_key": "AWS key",
     "database_secret": "AWS secret"
     }
-    '''
+    ```
     Then run app.py
