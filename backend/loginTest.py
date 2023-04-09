@@ -7,10 +7,12 @@ from databaseInterface import User
 
 app = Flask(__name__)
 
+__ENV__ = json.load(open(".env"))
+
 import os
 os.environ['AWS_DEFAULT_REGION'] = 'us-east-2'
 client = boto3.client('dynamodb')
-db = boto3.resource('dynamodb',aws_access_key_id='AKIAYQDOESACBSLNBPE5',aws_secret_access_key='REDACTED')
+db = boto3.resource('dynamodb',aws_access_key_id=__ENV__['database_key'],aws_secret_access_key=__ENV__['database_secret'])
 
 
 user = User(db)
