@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home_page.dart';
 import 'package:flutter_login/flutter_login.dart';
-//import 'dashboard_screen.dart';
 
 const users = {
   'ksubbaswamy@umass.edu': '12345',
   'epickard@umass.edu': 'umass',
+  'dummy@umass.edu': 'dummy',
 };
 
 class LoginPage extends StatelessWidget {
@@ -51,7 +51,7 @@ class LoginPage extends StatelessWidget {
       onSignup: _signupUser,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (context) => HomePage(),
         ));
       },
       onRecoverPassword: _recoverPassword,
