@@ -37,14 +37,14 @@ samples, guidance on mobile development, and a full API reference.
     -   This shouldn't be an issue, since we may be hosting this on a non-local server
 -   For a Mac app to work, you need to add "<key>com.apple.security.network.client</key><true/>"
     into the following file:
-    -   'flutter_app/macos/Runner/DebugProfile.entitlements'
+    -   'flutter_app/macos/Runner/DebugProfile.entitlements'/.
 
 ##PARSING REQUESTS:
 -   Import 'dart:convert'
 -   After you get a reponse, it will be in JSON format. Use 'jsonDecode' to
     convert the response from a JSON object to a Flutter object.
 -   You can now access attributes similar to a JSON object
-    -   Example, converted_response['name'] returns the value of the attribute 'name'
+    -   Example, converted_response['name'] returns the value of the attribute 'name'.
 
 ##RUNNING FLASK:
 -   Make sure to use pip to install Flask.
