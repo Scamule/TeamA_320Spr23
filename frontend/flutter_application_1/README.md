@@ -22,7 +22,8 @@ MAKING REQUESTS:
 -   Use the following line to get requests:
     -   'final http.Response response = await http.get(Uri.parse(url));'
     -   Note: The good status code is 200 for GET requests and 201 for POST requests
-        More info at https://pub.dev/packages/http_status_code
+        More info at https://pub.dev/packages/http_status_code.
+
 ALLOWING REQUESTS:
 -   To allow http requests in chrome, you need to add '--disable-web-security',
     after '--disable-extensions' to the following file:
