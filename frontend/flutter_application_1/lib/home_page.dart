@@ -5,12 +5,13 @@ import 'package:flutter_application_1/model/event_data_source.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final events = Provider.of<EventAdding>(context).events;
-
     //Calendar widget
     return Scaffold(
       body: SfCalendar(
