@@ -6,7 +6,12 @@ from databaseInterface import UserInterface
 
 app = Flask(__name__)
 
-__ENV__ = json.load(open(".env"))
+with open('.env', 'r') as file:
+    data = file.read()
+
+__ENV__ = json.loads(data)
+
+
 
 os.environ['AWS_DEFAULT_REGION'] = 'us-east-2'
 client = boto3.client('dynamodb')
