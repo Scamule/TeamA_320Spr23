@@ -26,30 +26,12 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
-//basic app bar and lower icons
 class _RootPageState extends State<RootPage> {
-  int currentPage = 0;
-  bool b = false;
+  //int currentPage = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("UScheduler"),
-      ),
-      body: const LoginPage(),
-      bottomNavigationBar: NavigationBar(
-        destinations: const [
-          NavigationDestination(
-              icon: Icon(Icons.calendar_month), label: 'Schedule'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile')
-        ],
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPage = index;
-          });
-        },
-        selectedIndex: currentPage,
-      ),
+    return const Scaffold(
+      body: LoginPage(),
     );
   }
 }
