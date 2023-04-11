@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/event_adding.dart';
 import 'package:flutter_application_1/home_page.dart';
@@ -28,13 +29,14 @@ class RootPage extends StatefulWidget {
 //basic app bar and lower icons
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
+  bool b = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("UScheduler"),
       ),
-      body: const HomePage(),
+      body: const LoginPage(),
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(
