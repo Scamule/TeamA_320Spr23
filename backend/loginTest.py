@@ -2,7 +2,7 @@
 from flask import Flask, request
 import json
 import boto3
-from databaseInterface import User
+from databaseInterface import UserInterface
 
 
 app = Flask(__name__)
@@ -15,14 +15,14 @@ client = boto3.client('dynamodb')
 db = boto3.resource('dynamodb',aws_access_key_id=__ENV__['database_key'],aws_secret_access_key=__ENV__['database_secret'])
 
 
-user = User(db)
+user = UserInterface(db)
 @app.route('/users', methods=['GET'])
 def userIndex():
     return user.getAllUsers()
 
-@app.route('/user', methods=['GET'])
+@app.route('/user', methods=['POST'])
 def userCreate():
-    return user.registerUser(request.args.get('email'), request.args.get('password'), request.args.get('userid'))
+    return user.registerUser(request.args.get('email'), request.args.get('password'), request.args.get('userid'), request.args.get('firstName'), request.args.get('lastName'))
 
 
 
