@@ -18,6 +18,10 @@ samples, guidance on mobile development, and a full API reference.
 ## Connecting Flutter to the backend
 
 MAKING REQUESTS:
+-   Make sure to add the 'http' dependency in the following file:
+    -   'pubspec.yaml'
+    -   After doing so, I believe saving the file will
+        update the 'pubspec.lock' file automatically
 -   Import 'package:http/http.dart' (as http preferably)
 -   Use the following line to get requests:
     -   'final http.Response response = await http.get(Uri.parse(url));'
