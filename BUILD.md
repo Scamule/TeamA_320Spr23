@@ -22,8 +22,9 @@ cd TeamA_320Spr23
     Generate .env in backend directory with valid credentials for database access
     ```
     {
-    "database_key": "AWS key",
-    "database_secret": "AWS secret"
+    "database_key": "i lost my keys",
+    "database_secret": "super_secret",
+    "bcrypt_salt": "salty"
     }
     ```
     Then run app.py
