@@ -11,8 +11,10 @@ import 'dart:convert';
 /// if the login info is correct
 /// [clientEmail] is the email the user has inputted
 /// [clientPassword] is the password the user has inputted
-/// We may use get requests for receiving into in the future,
+///
+/// We may use 'get' requests for receiving info in the future,
 /// but this was just to test post requests.
+///
 Future<Map<String, dynamic>> login(
     String clientEmail, String clientPassword) async {
   final http.Response response = await http.post(
@@ -22,7 +24,7 @@ Future<Map<String, dynamic>> login(
       "password": clientPassword,
     },
   );
-  debugPrint(response.statusCode.toString());
+  debugPrint('HTTP request status code: ${response.statusCode}');
   if (response.statusCode != HttpStatus.ok) {
     debugPrint('Invalid request.');
     return {"ok": false, "message": "Request failed. Please try again."};
@@ -34,8 +36,7 @@ Future<Map<String, dynamic>> login(
     debugPrint('Username and password are correct');
     return {"ok": true, "message": "Success"};
   } else {
-    debugPrint(
-        'User not found or invalid input, status code: ${data['statusCode']}');
+    debugPrint('${data['error']}. Status code: ${data['statusCode']}');
     return {"ok": false, "message": "Email and password do not match"};
   }
 }

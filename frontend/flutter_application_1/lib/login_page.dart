@@ -12,25 +12,26 @@ const users = {
 /// Determines if you use the dummy data locally or via the api
 /// If this is set to TRUE, you MUST have the
 /// '/backend/loginTest.py' file running
-const useHttpRequest = false;
+const useHttpRequest = true;
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
   Duration get loginTime => const Duration(milliseconds: 2250);
 
   Future<String?> _authUser(LoginData data) {
-    debugPrint('Name: ${data.name}, Password: ${data.password}');
+    debugPrint('\nEmail: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) async {
       if (useHttpRequest) {
-        debugPrint('Running login function');
+        // Using API local database
+        debugPrint('Running login...');
         Map<String, dynamic> loginResponse =
             await login(data.name, data.password);
-        debugPrint('Exited login function');
-        debugPrint(loginResponse['message']);
+        debugPrint('Finished login.');
         return loginResponse['ok'] ? null : loginResponse['message'];
       } else {
+        // Using local database
         if (!users.containsKey(data.name)) {
-          return 'User not exists';
+          return 'User does not exist';
         }
         if (users[data.name] != data.password) {
           return 'Password does not match';

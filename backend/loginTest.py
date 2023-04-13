@@ -45,20 +45,23 @@ def user_login():
     if (client_email is None) or (client_password is None):
         return json.dumps({
             "statusCode": HTTPStatus.PRECONDITION_FAILED,
-            "error": "Did not provide either an email or password"
+            "error": "Did not provide either an email or password",
+            "body": ""
         })
     
     server_password = server_data.get(client_email)
     if server_password is None:
         return json.dumps({
             "statusCode": HTTPStatus.NOT_FOUND,
-            "error": "The email was not found in the database"
+            "error": "The email was not found in the database",
+            "body": ""
         })
     
     if server_password != client_password:
         return json.dumps({
             "statusCode": HTTPStatus.NOT_FOUND,
-            "error": "The email and password you typed do not match"
+            "error": "Incorrect password",
+            "body": ""
         })
     
     # User input was correct and is logged in
