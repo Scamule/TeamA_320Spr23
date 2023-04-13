@@ -12,7 +12,7 @@ const users = {
 /// Determines if you use the dummy data locally or via the api
 /// If this is set to TRUE, you MUST have the
 /// '/backend/loginTest.py' file running
-const useHttpRequest = true;
+const useHttpRequest = false;
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
