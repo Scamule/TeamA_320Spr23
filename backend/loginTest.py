@@ -6,7 +6,6 @@ from http import HTTPStatus
 
 
 app = Flask(__name__)
-
 __ENV__ = json.load(open(".env"))
 
 import os
@@ -25,11 +24,10 @@ def userIndex():
 
 @app.route('/user', methods=['POST'])
 def userCreate():
-    # Just a note for the future, we're definitely goign to want to precondition
-    # this function call to ensure the arguments are valid
+    # Just a note for the future, we're definitely going to want to precondition
+    # this function call to ensure the arguments are valid since it's a
+    # very heavy call
     return user.registerUser(request.args.get('email'), request.args.get('password'), request.args.get('userid'), request.args.get('firstName'), request.args.get('lastName'))
-
-
 
 # Routing for loging in as an existing user
 server_data = {
