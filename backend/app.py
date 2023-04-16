@@ -1,8 +1,11 @@
 import os
-from flask import Flask, request
+from datetime import datetime
+
+from flask import Flask, request, make_response, jsonify
 import json
 import boto3
 from databaseInterface import UserInterface
+import jwt
 
 app = Flask(__name__)
 
@@ -11,32 +14,33 @@ with open('.env', 'r') as file:
 
 __ENV__ = json.loads(data)
 
-
-
 os.environ['AWS_DEFAULT_REGION'] = 'us-east-2'
 client = boto3.client('dynamodb')
-db = boto3.resource('dynamodb',aws_access_key_id=__ENV__['database_key'],aws_secret_access_key=__ENV__['database_secret'])
+db = boto3.resource('dynamodb', aws_access_key_id=__ENV__['database_key'],
+                    aws_secret_access_key=__ENV__['database_secret'])
 
 userInterface = UserInterface(db)
 
 
-
 @app.route('/user', methods=['POST'])
 def userCreate():
-    return userInterface.registerUser(request.args.get('email'), request.args.get('password'), request.args.get('userid'), request.args.get('firstName'), request.args.get('lastName'))
+    return jsonify(
+        userInterface.registerUser(request.args.get('email'), request.args.get('password'), request.args.get('userid'),
+                                   request.args.get('firstName'), request.args.get('lastName')))
 
 
+@app.route('/login', methods=['POST'])
+def userLogin():
+    if request.args.get('email') and request.args.get('password'):
+        user = userInterface.authUser(request.args.get('email'), request.args.get('password'))
+        if user:
+            token = jwt.encode(
+                {'user_id': user['id'], 'user_firstName': user['firstName'], 'exp': datetime.utcnow() + 86400},
+                __ENV__['jwt_secret'])
 
-
-
-
-
-
-
-
-
-
-
+            return make_response(jsonify({'token': token.decode('UTF-8')}), 201)
+    else:
+        return make_response('Missing arguments', 401)
 
 
 # ////////////////////////////////////////////////////////////////
@@ -50,7 +54,7 @@ def home():
 def hello():
     name = request.args.get('name')
     password = request.args.get('password')
-    thing = { "name": name, "password": password }
+    thing = {"name": name, "password": password}
     return json.dumps(thing)
 
 
@@ -76,6 +80,7 @@ def get():
         "sum": a + b
     }
     return json.dumps(instance)
+
 
 @app.route('/dynamic/<user>', methods=['GET'])
 def findUserExpl(user):
