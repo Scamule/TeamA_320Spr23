@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Flask, request, make_response, jsonify
 import json
@@ -33,12 +33,13 @@ def userCreate():
 def userLogin():
     if request.args.get('email') and request.args.get('password'):
         user = userInterface.authUser(request.args.get('email'), request.args.get('password'))
+
         if user:
             token = jwt.encode(
-                {'user_id': user['id'], 'user_firstName': user['firstName'], 'exp': datetime.utcnow() + 86400},
+                {'user_id': user['id'], 'user_firstName': user['firstName'], 'exp': datetime.utcnow() + timedelta(seconds=86400)},
                 __ENV__['jwt_secret'])
 
-            return make_response(jsonify({'token': token.decode('UTF-8')}), 201)
+            return make_response(jsonify({'token': token}), 201)
     else:
         return make_response('Missing arguments', 401)
 
@@ -95,4 +96,4 @@ def findUserExpl(user):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
