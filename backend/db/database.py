@@ -8,11 +8,10 @@ class Database:
         self.users = self.user_db.users
 
     def insert_new_user(self, email, password):
-        print(email)
         user_exists = self.users.find_one(
             {'email': email}
         )
-        if user_exists:
+        if user_exists == None:
             return str(-1)
 
         hash = bcrypt.hashpw(
@@ -23,3 +22,38 @@ class Database:
         })
 
         return str(user_id.inserted_id)
+
+    def get_user_password(self, email):
+        hash = self.users.find_one(
+            {'email': email}
+        )
+
+        if hash == None:
+            return None
+
+        return hash.get('password')
+
+    def change_user_password(self, email, new_password):
+        user_exists = self.users.find_one(
+            {'email': email}
+        )
+        if user_exists == None:
+            return str(-1)
+
+        hash = bcrypt.hashpw(
+            new_password.encode('utf-8'), bcrypt.gensalt())
+
+        return str(self.users.update_one(
+            {'_id': user_exists.get('_id')},
+            {'$set':
+                {
+                    'password': hash
+                }
+             }
+        ))
+
+    def user_exists(self, email):
+        user_exists = self.users.find_one(
+            {'email': email}
+        )
+        return user_exists != None
