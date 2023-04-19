@@ -10,9 +10,13 @@ cd TeamA_320Spr23
 ```
 
 - **Build Frontend**
+
   Download Flutter dependecies from https://docs.flutter.dev/get-started/install.
+
   Buld dependencies by running `flutter packages pub run build_runner build`.
+
   Then run the frontend by entering the directory and running the command `flutter run`.
+
 - **Build Backend**
 
   Download Python from python.org.
