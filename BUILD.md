@@ -24,7 +24,8 @@ cd TeamA_320Spr23
     {
     "database_key": "i lost my keys",
     "database_secret": "super_secret",
-    "bcrypt_salt": "salty"
+    "bcrypt_salt": "salty",
+    "jwt_secret": "keystothecar"
     }
     ```
     Then run app.py

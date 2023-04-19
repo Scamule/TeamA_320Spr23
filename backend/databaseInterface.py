@@ -29,3 +29,18 @@ class UserInterface:
     def getAllUsers(self):
         response = self.table.scan()
         return response["Items"]
+
+    def authUser(self, email, password):
+        hashed = bcrypt.hashpw(password.encode('utf-8'), __ENV__['bcrypt_salt'])
+        query = 'Email = :val1 and Password = :val2'
+        search_values = {
+            ':val1': {'S': email},
+            ':val2': {'S': hashed}
+        }
+
+        response = self.table.scan(
+            FilterExpression=query,
+            ExpressionAttributeValues=search_values
+        )
+
+
