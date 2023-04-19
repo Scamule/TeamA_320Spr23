@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/event_adding.dart';
 import 'package:flutter_application_1/event_editing_page.dart';
 import 'package:flutter_application_1/model/event_data_source.dart';
+import 'package:flutter_application_1/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:flutter_application_1/calender_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,27 +18,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final events = Provider.of<EventAdding>(context).events;
-    //Calendar widget
-    return Scaffold(
-      body: SfCalendar(
-        view: CalendarView.week,
-        dataSource: EventDataSource(events),
-        initialSelectedDate: DateTime.now(),
-        firstDayOfWeek: 7,
-        headerHeight: 55,
-        // onTap: (details) {
-        //   if (details.appointments == null) return;
-        //   final event = details.appointments!.first;
-        //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => EventEditingPage(event: event),
-        //   ));
-        // },
-        //dataSource: EventDataSource(events),
-      ),
-      appBar: AppBar(
-        title: const Text("UScheduler"),
-      ),
+    final List<Widget> pages = [CalenderPage(), ProfileScreen()];
+      return Scaffold(
+      body: pages[currentPage],
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(
@@ -50,12 +34,7 @@ class _HomePageState extends State<HomePage> {
         },
         selectedIndex: currentPage,
       ),
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const EventEditingPage()))
-          //debugPrint('Clicked on button!'); },
-          ),
     );
   }
 }
+
