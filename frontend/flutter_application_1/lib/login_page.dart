@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home_page.dart';
+import 'package:flutter_application_1/profile_page.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_application_1/http_requests.dart';
 
@@ -8,6 +9,7 @@ const users = {
   'epickard@umass.edu': 'umass',
   'dummy@umass.edu': 'dummy',
 };
+var email = "email not set";
 
 /// Determines if you use the dummy data locally or via the api
 /// If this is set to TRUE, you MUST have the
@@ -19,6 +21,7 @@ class LoginPage extends StatelessWidget {
   Duration get loginTime => const Duration(milliseconds: 2250);
 
   Future<String?> _authUser(LoginData data) {
+    email = data.name;
     debugPrint('\nEmail: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) async {
       if (useHttpRequest) {
@@ -63,11 +66,11 @@ class LoginPage extends StatelessWidget {
     return FlutterLogin(
       title: 'UScheduler',
       //logo: const AssetImage('assets/images/ecorp-lightblue.png'),
-      onLogin: _authUser,
+      onLogin:(data) => _authUser(data),
       onSignup: _signupUser,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (context) => HomePage(todo: Todo(email)),
         ));
       },
       onRecoverPassword: _recoverPassword,

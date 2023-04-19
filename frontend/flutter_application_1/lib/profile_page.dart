@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:flutter_application_1/login_page.dart';
 
+
+/*
+this is the class that can be used to send data around
+to add a new piece of data, initialize a new variable with the "final" keyword,
+then add it to the constructor
+*/
+class Todo {
+  final String email;
+  const Todo(this.email);
+}
 class ProfileScreen extends StatelessWidget{
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, required this.todo});
+  final Todo todo;
 
   @override
   Widget build(BuildContext context){
@@ -32,7 +43,7 @@ class ProfileScreen extends StatelessWidget{
               const SizedBox(height: 10),
               Text("Welcome!", style: Theme.of(context).textTheme.headlineMedium),
               Icon(Icons.email,color: Colors.grey[400]),
-              Text("Email here!", style: Theme.of(context).textTheme.bodyMedium),
+              Text(todo.email, style: Theme.of(context).textTheme.bodyMedium),
 
               const SizedBox(height: 30),
               const Divider(),

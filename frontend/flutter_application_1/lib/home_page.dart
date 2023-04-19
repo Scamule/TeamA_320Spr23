@@ -8,17 +8,19 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_application_1/calender_view.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Todo todo;
+  const HomePage({super.key, required this.todo});
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState(todo: todo);
 }
 
 class _HomePageState extends State<HomePage> {
   int currentPage = 0;
-
+  _HomePageState({required this.todo});
+  final Todo todo;
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [CalenderPage(), ProfileScreen()];
+    final List<Widget> pages = [const CalenderPage(), ProfileScreen(todo: todo)];
       return Scaffold(
       body: pages[currentPage],
       bottomNavigationBar: NavigationBar(
