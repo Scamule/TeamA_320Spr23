@@ -6,6 +6,8 @@ import os
 from utils.email_sender import EmailSender
 from dotenv import load_dotenv
 import random
+from APIs.spire_api import SpireAPI
+import json
 
 load_dotenv()
 
@@ -14,6 +16,7 @@ client = MongoClient()
 database = Database(client)
 email_sender = EmailSender(smtp_server='smtp.gmail.com', smtp_port=587,
                            username=os.getenv('SENDER_EMAIL'), password=os.getenv('SENDER_PASSWORD'))
+spire_api = SpireAPI()
 
 
 @app.route('/user/login', methods=['POST'])
@@ -67,7 +70,12 @@ def userSignup():
     return database.insert_new_user(json.get('email'), json.get('password'))
 
 
+@app.route('/events/get', methods=['POST'])
+def getEvents():
+    jobj = request.get_json()
+    query = jobj.get('query')
+    return json.dumps(spire_api.getRelevantClasses(query, 10))
+
+
 if __name__ == '__main__':
-    # print(email_sender.send_email(os.getenv('SENDER_EMAIL'),
-    #                               'alavrenenko@umass.edu', 'LOL', 'LOL'))
     app.run(debug=True)

@@ -7,8 +7,7 @@ import 'package:uscheduler/utils/status.dart';
 class Network {
   static handleNetworkResponse(uri, headers, body) async {
     try {
-      var response = await http.post(uri,
-          headers: headers, body: body);
+      var response = await http.post(uri, headers: headers, body: body);
       if (SUCCESS == response.statusCode) {
         return Success(response: response.body);
       }

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:injectable/injectable.dart';
 import 'package:uscheduler/repositories/user_repository.dart';
 
+import '../repositories/shared_preferences.dart';
 import '../utils/status.dart';
 
+@singleton
 class LoginViewModel extends ChangeNotifier {
-  late UserRepository _userRepository;
+  final UserRepository _userRepository;
+  final SharedPreferencesRepo _sharedPreferences;
   String? verificationCode;
   String? recoveryCode;
 
-  LoginViewModel() {
-    _userRepository = UserRepository();
-  }
+  LoginViewModel(this._sharedPreferences, this._userRepository);
 
   signUpUser(LoginData data) async {
     var response = await _userRepository.signUpUser(data);
@@ -35,6 +37,7 @@ class LoginViewModel extends ChangeNotifier {
       if (res == "-1") {
         return "Incorrect login or password";
       } else {
+        _sharedPreferences.saveIsLoggedIn(true);
         return null;
       }
     }
@@ -88,5 +91,9 @@ class LoginViewModel extends ChangeNotifier {
     if (response is Failure) {
       return response.errorResponse as String;
     }
+  }
+
+  Future<bool> get isLoggedIn async {
+    return await _sharedPreferences.isLoggedIn;
   }
 }

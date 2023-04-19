@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_login/flutter_login.dart';
+import 'package:injectable/injectable.dart';
 import 'package:uscheduler/utils/constants.dart';
 import 'package:uscheduler/utils/network.dart';
 
+@singleton
 class UserRepository {
   final url = SERVER_URL;
 
