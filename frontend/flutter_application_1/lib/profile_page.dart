@@ -34,11 +34,6 @@ class ProfileScreen extends StatelessWidget{
               Icon(Icons.email,color: Colors.grey[400]),
               Text("Email here!", style: Theme.of(context).textTheme.bodyMedium),
 
-              
-               
-    
-
-              
               const SizedBox(height: 30),
               const Divider(),
               const SizedBox(height: 10),
