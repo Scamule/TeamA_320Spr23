@@ -47,7 +47,7 @@ def userRecoverPassword():
     json = request.get_json()
     email = json.get('email')
     if not database.user_exists(email):
-        return "Exception: user exists"
+        return "Exception: user does not exist"
     code = random.randint(100000, 999999)
     res = email_sender.send_email(
         os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))

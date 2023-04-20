@@ -11,7 +11,7 @@ class Database:
         user_exists = self.users.find_one(
             {'email': email}
         )
-        if user_exists == None:
+        if user_exists != None:
             return str(-1)
 
         hash = bcrypt.hashpw(
