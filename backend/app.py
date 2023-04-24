@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from functools import wraps
 
 import jwt
 from flask import Flask, request, make_response, jsonify
@@ -23,7 +24,23 @@ spire_api = SpireAPI()
 
 # client.server_info()
 
+def jwt_required(func):
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get('Authorization', None)
+        if not auth_header:
+            return make_response(jsonify({'message': 'Authorization header is required'}), 401)
 
+        token = auth_header.split(' ')[1]
+
+        try:
+            data = jwt.decode(token, os.getenv('JWT_SECRET'), algorithms=["HS256"])
+        except:
+            return make_response(jsonify({'message': 'Invalid token'}), 401)
+
+        return func(data, *args, **kwargs)
+
+    return decorated
 
 @app.route('/user/login', methods=['POST'])
 def userLogin():
@@ -37,10 +54,10 @@ def userLogin():
 
 
 
-    user = database.auth_user(email, password)
-    # user = {}
-    # user['firstName'] = "testusername"
-    # user['id'] = 7
+    # user = database.auth_user(email, password)
+    user = {}
+    user['firstName'] = "testusername"
+    user['id'] = 7
 
 
     if user:
@@ -53,6 +70,11 @@ def userLogin():
     else:
         return make_response('Invalid Login', 401)
 
+
+@app.route('/test/protectedRoute', methods=['GET'])
+@jwt_required
+def get_user_name(data):
+    return make_response(jsonify(data['user_firstName']), 200)
 
 
 @app.route('/user/validate_email', methods=['POST'])
