@@ -54,10 +54,10 @@ def userLogin():
 
 
 
-    # user = database.auth_user(email, password)
-    user = {}
-    user['firstName'] = "testusername"
-    user['id'] = 7
+    user = database.auth_user(email, password)
+    # user = {}
+    # user['firstName'] = "testusername"
+    # user['id'] = 7
 
 
     if user:
