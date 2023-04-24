@@ -1,4 +1,7 @@
-from flask import Flask, request
+from datetime import datetime, timedelta
+
+import jwt
+from flask import Flask, request, make_response, jsonify
 from pymongo import MongoClient
 from db.database import Database
 import bcrypt
@@ -18,16 +21,38 @@ email_sender = EmailSender(smtp_server='smtp.gmail.com', smtp_port=587,
                            username=os.getenv('SENDER_EMAIL'), password=os.getenv('SENDER_PASSWORD'))
 spire_api = SpireAPI()
 
+# client.server_info()
+
+
 
 @app.route('/user/login', methods=['POST'])
 def userLogin():
-    json = request.get_json()
-    email = json.get('email')
-    password = json.get('password')
-    saved_password = database.get_user_password(email)
-    if saved_password == None or not bcrypt.checkpw(password.encode('utf-8'), saved_password):
-        return str(-1)
-    return str(1)
+
+    try:
+        json_data = request.get_json()
+        email = json_data.get('email')
+        password = json_data.get('password')
+    except:
+        return make_response("BAD REQUEST: missing argument(email, password)", 400)
+
+
+
+    user = database.auth_user(email, password)
+    # user = {}
+    # user['firstName'] = "testusername"
+    # user['id'] = 7
+
+
+    if user:
+        token = jwt.encode(
+            {'user_id': user['id'], 'user_firstName': user['firstName'],
+             'exp': datetime.utcnow() + timedelta(days=1)},
+            os.getenv('JWT_SECRET'))
+
+        return make_response(jsonify({'token': token}), 200)
+    else:
+        return make_response('Invalid Login', 401)
+
 
 
 @app.route('/user/validate_email', methods=['POST'])
@@ -78,4 +103,4 @@ def getEvents():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
