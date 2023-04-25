@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:flutter_application_1/login_page.dart';
+import 'package:flutter_application_1/update_profile_page.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget{
   const ProfileScreen({super.key});
@@ -41,8 +43,14 @@ class ProfileScreen extends StatelessWidget{
               ProfileMenuWidget(
                 title: "Settings",
                 icon: LineAwesomeIcons.cog,
-                onPress:(){}),
-
+                //onPress: () => Get.to(const UpdateProfileScreen()),
+                onPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UpdateProfileScreen()),
+                  );
+                },
+              ),
               const Divider(color: Colors.grey),
               const SizedBox(height: 10),
 
