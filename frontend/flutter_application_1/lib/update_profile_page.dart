@@ -47,17 +47,22 @@ class UpdateProfileScreen extends StatelessWidget{
 
               ],
             ),*/
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
+            Text("Enter new email/password", style: Theme.of(context).textTheme.headlineMedium),
+            const SizedBox(height: 30),
+            const Divider(),
             Form(child: Column(
               children: [
                 TextFormField(
                   decoration: const InputDecoration(label: Text("Email"), prefixIcon: Icon(Icons.person_outline_rounded)),
                 ),
+                const SizedBox(height: 10),
                 TextFormField(
                   decoration: const InputDecoration(label: Text("Password"), prefixIcon: Icon(Icons.fingerprint)),
                 ),
+                const SizedBox(height: 30),
                 SizedBox(
-                  width: double.infinity,
+                  width: 200,
                   child: ElevatedButton(
                     onPressed: () { Navigator.of(context).pop(true);
                       /*
@@ -81,3 +86,16 @@ class UpdateProfileScreen extends StatelessWidget{
   }
 }
 
+class TextFormFieldTheme{
+  TextFormFieldTheme._();
+
+  static InputDecorationTheme lightInputDecorationTheme =
+  const InputDecorationTheme(
+    border: OutlineInputBorder(),
+    prefixIconColor: Colors.purple,
+    floatingLabelStyle: TextStyle(color: Colors.purple),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(width: 2, color: Colors.purple), 
+    )
+  );
+}
