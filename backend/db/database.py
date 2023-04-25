@@ -33,6 +33,15 @@ class Database:
 
         return hash.get('password')
 
+    def auth_user(self, email, password):
+        user = self.users.find_one({'email': email})
+
+        if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+            return user
+        else:
+            return None
+
+
     def change_user_password(self, email, new_password):
         user_exists = self.users.find_one(
             {'email': email}
