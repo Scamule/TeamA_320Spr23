@@ -38,8 +38,8 @@ class Database:
             user = {}
             user['email'] = "test@umass.edu"
             user['password'] = 'passhash'
-            user['firstName'] = 'Pablo'
-            user['id'] = '88'
+            # user['firstName'] = 'Pablo'
+            # user['id'] = '88'
             return user
 
         user = self.users.find_one({'email': email})

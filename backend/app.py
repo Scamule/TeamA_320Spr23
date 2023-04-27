@@ -61,7 +61,7 @@ def userLogin():
 
     if user:
         token = jwt.encode(
-            {'user_id': user['id'], 'user_firstName': user['firstName'],
+            {'user_id': user['email'],
              'exp': datetime.utcnow() + timedelta(days=1)},
             os.getenv('JWT_SECRET'))
 
@@ -82,10 +82,9 @@ def userValidateEmail():
     json = request.get_json()
     email = json.get('email')
     code = random.randint(100000, 999999)
-    res = email_sender.send_email(
-        os.getenv('SENDER_EMAIL'), email, 'Email verification', 'Here is your confirmation code: ' + str(code))
-    if res != None:
-        return "Exception: " + str(res)
+    # res = email_sender.send_email(os.getenv('SENDER_EMAIL'), email, 'Email verification', 'Here is your confirmation code: ' + str(code))
+    # if res != None:
+    #     return "Exception: " + str(res)
     return str(code)
 
 
@@ -96,10 +95,10 @@ def userRecoverPassword():
     if not database.user_exists(email):
         return "Exception: user does not exist"
     code = random.randint(100000, 999999)
-    res = email_sender.send_email(
-        os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))
-    if res != None:
-        return "Exception: " + str(res)
+    # res = email_sender.send_email(
+    #     os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))
+    # if res != None:
+    #     return "Exception: " + str(res)
     return str(code)
 
 
