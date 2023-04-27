@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -44,14 +45,12 @@ def jwt_required(func):
 
 @app.route('/user/login', methods=['POST'])
 def userLogin():
-
     try:
         json_data = request.get_json()
         email = json_data.get('email')
         password = json_data.get('password')
     except:
         return make_response("BAD REQUEST: missing argument(email, password)", 400)
-
 
 
     user = database.auth_user(email, password)
@@ -68,12 +67,13 @@ def userLogin():
 
         return make_response(jsonify({'token': token}), 200)
     else:
-        return make_response('Invalid Login', 401)
+        return make_response('Email and Password do not match', 401)
 
 
 @app.route('/test/protectedRoute', methods=['GET'])
 @jwt_required
 def get_user_name(data):
+    print(request.headers)
     return make_response(jsonify(data['user_firstName']), 200)
 
 
@@ -118,7 +118,8 @@ def userSignup():
 
 
 @app.route('/events/get', methods=['POST'])
-def getEvents():
+@jwt_required
+def getEvents(data):
     jobj = request.get_json()
     query = jobj.get('query')
     return json.dumps(spire_api.getRelevantClasses(query, 10))
