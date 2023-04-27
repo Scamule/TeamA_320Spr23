@@ -8,4 +8,4 @@ const INVALID_FORMAT = 102;
 const UNKNOWN_ERROR = 103;
 
 // Backend url
-const SERVER_URL = "http://10.0.2.2:5000";
+const SERVER_URL = "http://127.0.0.1:3000";

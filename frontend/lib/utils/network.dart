@@ -12,7 +12,7 @@ class Network {
         return Success(response: response.body);
       }
       return Failure(
-          code: USER_INVALID_RESPONSE, errorResponse: 'Invalid Response');
+          code: USER_INVALID_RESPONSE, errorResponse: response.body);
     } on HttpException {
       return Failure(
           code: NO_INTERNET, errorResponse: 'No Internet Connection');
