@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:uscheduler/utils/constants.dart';
 import 'package:uscheduler/utils/status.dart';
@@ -11,8 +12,7 @@ class Network {
       if (SUCCESS == response.statusCode) {
         return Success(response: response.body);
       }
-      return Failure(
-          code: USER_INVALID_RESPONSE, errorResponse: 'Invalid Response');
+      return Failure(code: response.statusCode, errorResponse: response.body);
     } on HttpException {
       return Failure(
           code: NO_INTERNET, errorResponse: 'No Internet Connection');

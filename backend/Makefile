@@ -1,10 +1,13 @@
 .SILENT: setup
 
 run: setup 
-	make -j 2 app mongodb
+	make -j 3 app mongodb scraper
 	
 app: 
 	python app.py
+
+scraper:
+	python -m scrapers.spire_scraper.py
 
 mongodb:
 	mongod 

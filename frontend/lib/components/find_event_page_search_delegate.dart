@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -51,7 +52,7 @@ class FindEventPageSearchDelegate extends SearchDelegate {
           if (response is Failure) {
             return Center(
               child: Text(
-                response.errorResponse as String,
+                jsonDecode(response.errorResponse as String)["message"],
                 style: const TextStyle(fontSize: 18),
               ),
             );
@@ -62,15 +63,45 @@ class FindEventPageSearchDelegate extends SearchDelegate {
               results = courseFromJson(res);
             }
           }
-          return ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (context, index) {
-              var result = results[index];
-              return ListTile(
-                title: Text(result.id ?? ""),
-              );
-            },
-          );
+          List<bool?> isClicked = List.filled(results.length, false);
+          var events = _homeViewModel.getEvents();
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            events.then((list) => {
+                  for (var i = 0; i < results.length; i++)
+                    {
+                      list.forEach((e) => {
+                            if (e['id'] == results[i].id) {isClicked[i] = true}
+                          })
+                    },
+                  setState(() {})
+                });
+            return ListView.builder(
+              itemCount: results.length,
+              itemBuilder: (context, index) {
+                var result = results[index];
+                return ListTile(
+                  title: Text(result.id ?? ""),
+                  trailing: SizedBox(
+                    width: 70,
+                    child: Checkbox(
+                      value: isClicked[index],
+                      onChanged: (bool? val) {
+                        setState(() {
+                          isClicked[index] = val;
+                        });
+                        if (val!) {
+                          _homeViewModel.addEvent(results[index]);
+                        } else {
+                          _homeViewModel.deleteEvent(results[index]);
+                        }
+                      },
+                    ),
+                  ),
+                );
+              },
+            );
+          });
         } else {
           return const Center(
             child: CircularProgressIndicator(),
@@ -102,7 +133,7 @@ class FindEventPageSearchDelegate extends SearchDelegate {
               if (response is Failure) {
                 return Center(
                   child: Text(
-                    response.errorResponse as String,
+                    jsonDecode(response.errorResponse as String)["message"],
                     style: const TextStyle(fontSize: 18),
                   ),
                 );
@@ -113,15 +144,46 @@ class FindEventPageSearchDelegate extends SearchDelegate {
                   results = courseFromJson(res);
                 }
               }
-              return ListView.builder(
-                itemCount: results.length,
-                itemBuilder: (context, index) {
-                  var result = results[index];
-                  return ListTile(
-                    title: Text(result.id ?? ""),
-                  );
-                },
-              );
+              List<bool?> isClicked = List.filled(results.length, false);
+              var events = _homeViewModel.getEvents();
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                events.then((list) => {
+                      for (var i = 0; i < results.length; i++)
+                        {
+                          list.forEach((e) => {
+                                if (e['id'] == results[i].id)
+                                  {isClicked[i] = true}
+                              })
+                        },
+                      setState(() {})
+                    });
+                return ListView.builder(
+                  itemCount: results.length,
+                  itemBuilder: (context, index) {
+                    var result = results[index];
+                    return ListTile(
+                      title: Text(result.id ?? ""),
+                      trailing: SizedBox(
+                        width: 70,
+                        child: Checkbox(
+                          value: isClicked[index],
+                          onChanged: (bool? val) {
+                            setState(() {
+                              isClicked[index] = val;
+                            });
+                            if (val!) {
+                              _homeViewModel.addEvent(results[index]);
+                            } else {
+                              _homeViewModel.deleteEvent(results[index]);
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
+              });
             }
           }
           return const Center(

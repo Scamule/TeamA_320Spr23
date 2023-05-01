@@ -1,4 +1,5 @@
 import bcrypt
+import pymongo
 
 
 class Database:
@@ -6,6 +7,8 @@ class Database:
         self.client = client
         self.user_db = client.user_db
         self.users = self.user_db.users
+        self.cources = self.user_db.cources
+        self.terms = self.user_db.terms
 
     def insert_new_user(self, email, password):
         user_exists = self.users.find_one(
@@ -49,7 +52,6 @@ class Database:
         else:
             return None
 
-
     def change_user_password(self, email, new_password):
         user_exists = self.users.find_one(
             {'email': email}
@@ -74,3 +76,58 @@ class Database:
             {'email': email}
         )
         return user_exists != None
+
+    def upsertCourse(self, course):
+        self.cources.replace_one(filter={'id': course.get('id')},
+                                 replacement=course,
+                                 upsert=True)
+
+    def upsertTerm(self, term):
+        self.terms.replace_one(filter={'id': term.get('id')},
+                               replacement=term,
+                               upsert=True)
+
+    def getAllTerms(self):
+        return list(self.terms.find({}, {'_id': False}))
+
+    def searchforCources(self, query):
+        self.cources.create_index(
+            [('id', 'text'), ('description', 'text')], name="search_index")
+        return list(self.cources.find({'$text': {'$search': query}}, {'_id': False}))
+
+    def addEvent(self, email, event):
+        events = self.users.find_one({'email': email}).get('events')
+        print(events)
+        if events == None:
+            events = []
+        if event in events:
+            return
+        events.append(event)
+        return self.users.update_one(
+            {'email': email},
+            {'$set':
+                {
+                    'events': events
+                }
+             }
+        )
+
+    def deleteEvent(self, email, event):
+        events = self.users.find_one({'email': email}).get('events')
+        print(events)
+        if events == None:
+            events = []
+        if event not in events:
+            return
+        events.remove(event)
+        return self.users.update_one(
+            {'email': email},
+            {'$set':
+                {
+                    'events': events
+                }
+             }
+        )
+    
+    def getEvent(self, email):
+        return self.users.find_one({'email': email}).get('events')

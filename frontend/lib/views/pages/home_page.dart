@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final List<Widget> _pages = <Widget>[
     scheduleFragment(),
-    builderFragment(),
+    BuilderFragment(),
     accountFragment()
   ];
 

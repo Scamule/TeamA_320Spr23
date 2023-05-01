@@ -4,13 +4,15 @@
 
 import 'dart:convert';
 
+import 'package:uscheduler/models/event.dart';
+
 List<Course> courseFromJson(String str) =>
     List<Course>.from(json.decode(str).map((x) => Course.fromJson(x)));
 
 String courseToJson(List<Course> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Course {
+class Course implements Event{
   Course({
     this.updatedAt,
     this.description,
@@ -71,6 +73,9 @@ class Course {
         "title": title,
         "url": url,
       };
+
+  @override
+  String type = EventType.COURSE;
 }
 
 class Details {
