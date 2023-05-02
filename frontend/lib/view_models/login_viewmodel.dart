@@ -6,11 +6,6 @@ import 'package:uscheduler/repositories/user_repository.dart';
 import '../repositories/shared_preferences.dart';
 import '../utils/status.dart';
 
-const response = {
-  'ksubbaswamy@umass.edu': '12345',
-  'epickard@umass.edu': 'umass',
-  'dummy@umass.edu': 'dummy',
-};
 
 @singleton
 class LoginViewModel extends ChangeNotifier {
