@@ -22,6 +22,8 @@ class Course {
     this.subject,
     this.title,
     this.url,
+    this.from,
+    this.to,
   });
 
   DateTime? updatedAt;
@@ -34,6 +36,8 @@ class Course {
   Subject? subject;
   String? title;
   String? url;
+  DateTime? from;
+  DateTime? to;
 
   factory Course.fromJson(Map<String, dynamic> json) => Course(
         updatedAt: json["_updated_at"] == null

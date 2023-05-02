@@ -6,7 +6,8 @@ import 'package:uscheduler/main.config.dart';
 import 'package:uscheduler/utils/navigation_service.dart';
 import 'package:uscheduler/view_models/home_viewmodel.dart';
 import 'package:uscheduler/view_models/login_viewmodel.dart';
-import 'views/pages/login_page.dart';
+import 'package:uscheduler/views/pages/home_page.dart';
+import 'package:uscheduler/views/pages/login_page.dart';
 
 final getIt = GetIt.instance;
 

@@ -7,6 +7,7 @@ import '../repositories/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../utils/status.dart';
 
+
 @singleton
 class LoginViewModel extends ChangeNotifier {
   final UserRepository _userRepository;
