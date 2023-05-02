@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final course = courseFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:uscheduler/models/event.dart';
@@ -12,19 +8,19 @@ List<Course> courseFromJson(String str) =>
 String courseToJson(List<Course> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Course implements Event{
-  Course({
-    this.updatedAt,
-    this.description,
-    this.details,
-    this.enrollmentInformation,
-    this.id,
-    this.number,
-    this.offerings,
-    this.subject,
-    this.title,
-    this.url,
-  });
+class Course implements Event {
+  Course(
+      {this.updatedAt,
+      this.description,
+      this.details,
+      this.enrollmentInformation,
+      this.id,
+      this.number,
+      this.offerings,
+      this.subject,
+      this.title,
+      this.url,
+      this.token});
 
   DateTime? updatedAt;
   String? description;
@@ -36,28 +32,29 @@ class Course implements Event{
   Subject? subject;
   String? title;
   String? url;
+  List<dynamic>? token;
 
   factory Course.fromJson(Map<String, dynamic> json) => Course(
-        updatedAt: json["_updated_at"] == null
-            ? null
-            : DateTime.parse(json["_updated_at"]),
-        description: json["description"],
-        details:
-            json["details"] == null ? null : Details.fromJson(json["details"]),
-        enrollmentInformation: json["enrollment_information"] == null
-            ? null
-            : EnrollmentInformation.fromJson(json["enrollment_information"]),
-        id: json["id"],
-        number: json["number"],
-        offerings: json["offerings"] == null
-            ? []
-            : List<Offering>.from(
-                json["offerings"]!.map((x) => Offering.fromJson(x))),
-        subject:
-            json["subject"] == null ? null : Subject.fromJson(json["subject"]),
-        title: json["title"],
-        url: json["url"],
-      );
+      updatedAt: json["_updated_at"] == null
+          ? null
+          : DateTime.parse(json["_updated_at"]),
+      description: json["description"],
+      details:
+          json["details"] == null ? null : Details.fromJson(json["details"]),
+      enrollmentInformation: json["enrollment_information"] == null
+          ? null
+          : EnrollmentInformation.fromJson(json["enrollment_information"]),
+      id: json["id"],
+      number: json["number"],
+      offerings: json["offerings"] == null
+          ? []
+          : List<Offering>.from(
+              json["offerings"]!.map((x) => Offering.fromJson(x))),
+      subject:
+          json["subject"] == null ? null : Subject.fromJson(json["subject"]),
+      title: json["title"],
+      url: json["url"],
+      token: json["token"]);
 
   Map<String, dynamic> toJson() => {
         "_updated_at": updatedAt?.toIso8601String(),
@@ -72,6 +69,7 @@ class Course implements Event{
         "subject": subject?.toJson(),
         "title": title,
         "url": url,
+        "token": token
       };
 
   @override

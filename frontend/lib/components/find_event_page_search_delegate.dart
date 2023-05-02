@@ -11,6 +11,9 @@ import '../utils/status.dart';
 
 class FindEventPageSearchDelegate extends SearchDelegate {
   final HomeViewModel _homeViewModel = GetIt.instance<HomeViewModel>();
+  final Function() onClosed;
+
+  FindEventPageSearchDelegate({required this.onClosed});
 
   Completer<Status> _completer = Completer();
 
@@ -190,5 +193,11 @@ class FindEventPageSearchDelegate extends SearchDelegate {
             child: CircularProgressIndicator(),
           );
         });
+  }
+
+  @override
+  void close(BuildContext context, result) {
+    onClosed();
+    super.close(context, result);
   }
 }

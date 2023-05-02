@@ -11,6 +11,7 @@ from utils.email_sender import EmailSender
 from dotenv import load_dotenv
 import random
 from APIs.spire_api import SpireAPI
+from APIs.entities.schedule_builder import ScheduleBuilder
 import json
 
 load_dotenv()
@@ -21,7 +22,7 @@ database = Database(client)
 email_sender = EmailSender(smtp_server='smtp.gmail.com', smtp_port=587,
                            username=os.getenv('SENDER_EMAIL'), password=os.getenv('SENDER_PASSWORD'))
 spire_api = SpireAPI()
-
+schedule_builder = ScheduleBuilder()
 # client.server_info()
 
 
@@ -143,8 +144,22 @@ def deleteEvent(jwt_data):
 
 @app.route('/user/events/get', methods=['POST'])
 @jwt_required
-def deleteEvents(jwt_data):
+def getEvent(jwt_data):
     return json.dumps(database.getEvent(jwt_data.get('email')))
+
+
+@app.route('/user/events/suggest', methods=['POST'])
+@jwt_required
+def suggestEvents(jwt_data):
+    return json.dumps(spire_api.suggestEvents(jwt_data.get('email')))
+
+
+@app.route('/user/schedule/generate', methods=['POST'])
+@jwt_required
+def generateSchedules(jwt_data):
+    print(json.dumps(schedule_builder.getAllPossibleSchedules(
+        database.getEvent(jwt_data.get('email')))))
+    return json.dumps(schedule_builder.getAllPossibleSchedules(database.getEvent(jwt_data.get('email'))))
 
 
 if __name__ == '__main__':

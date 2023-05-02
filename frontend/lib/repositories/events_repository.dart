@@ -51,4 +51,24 @@ class EventsRepository {
     return await Network.handleNetworkResponse(
         Uri.parse("$url/user/events/get"), headers, json.encode(request));
   }
+
+  Future<Status> suggestEvents(String token) async {
+    Map<String, dynamic> request = {};
+    final headers = {
+      'Content-Type': 'application/json',
+      HttpHeaders.authorizationHeader: "Bearer $token"
+    };
+    return await Network.handleNetworkResponse(
+        Uri.parse("$url/user/events/suggest"), headers, json.encode(request));
+  }
+
+  Future<Status> generateSchedules(String token) async {
+    Map<String, dynamic> request = {};
+    final headers = {
+      'Content-Type': 'application/json',
+      HttpHeaders.authorizationHeader: "Bearer $token"
+    };
+    return await Network.handleNetworkResponse(
+        Uri.parse("$url/user/schedule/generate"), headers, json.encode(request));
+  }
 }

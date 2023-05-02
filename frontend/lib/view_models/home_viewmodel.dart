@@ -44,4 +44,27 @@ class HomeViewModel extends ChangeNotifier {
       return response;
     }
   }
+
+  suggestEvents() async {
+    var token = await _securedSharedPreferences.userToken;
+    var response = await _eventsRepository.suggestEvents(token);
+    if (response is Success) {
+      return jsonDecode(response.response as String) as List<dynamic>;
+    }
+    if (response is Failure) {
+      return response;
+    }
+  }
+
+  generateSchedules() async {
+    var token = await _securedSharedPreferences.userToken;
+    var response = await _eventsRepository.generateSchedules(token);
+    if (response is Success) {
+      return response.response;
+    }
+    if (response is Failure) {
+      return response;
+    }
+  }
+
 }

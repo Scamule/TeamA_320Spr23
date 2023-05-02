@@ -90,14 +90,19 @@ class Database:
     def getAllTerms(self):
         return list(self.terms.find({}, {'_id': False}))
 
+    def getAllCources(self):
+        return list(self.cources.find({}, {'_id': False}))
+
     def searchforCources(self, query):
         self.cources.create_index(
             [('id', 'text'), ('description', 'text')], name="search_index")
         return list(self.cources.find({'$text': {'$search': query}}, {'_id': False}))
 
+    def getAllCources(self):
+        return list(self.cources.find({}, {'_id': False}))
+
     def addEvent(self, email, event):
         events = self.users.find_one({'email': email}).get('events')
-        print(events)
         if events == None:
             events = []
         if event in events:
@@ -128,6 +133,6 @@ class Database:
                 }
              }
         )
-    
+
     def getEvent(self, email):
         return self.users.find_one({'email': email}).get('events')

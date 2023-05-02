@@ -45,6 +45,7 @@ dependencies:
   json_annotation: ^4.7.0
   debounce_throttle: ^2.0.0
   secure_shared_preferences: ^0.0.4
+  intl: ^0.18.0
 
 
 dev_dependencies:

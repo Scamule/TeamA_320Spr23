@@ -3,6 +3,8 @@ from datetime import datetime, date
 from .entities.cources_filter import CourcesFilter
 from db.database import Database
 from pymongo import MongoClient
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 
 class SpireAPI:
@@ -18,6 +20,9 @@ class SpireAPI:
     def getAllTerms(self):
         return self.database.getAllTerms()
 
+    def request(self, url):
+        return requests.get(url).json()
+
     def getClosestTerm(self):
         terms = self.getAllTerms()
         cur_date = date.today()
@@ -30,3 +35,29 @@ class SpireAPI:
                 return terms[i]
 
         return terms[-1]
+
+    def suggestEvents(self, email):
+        term = self.getClosestTerm().get('id')
+        cources = CourcesFilter(self.database.getAllCources(
+        )).filterOfferingsByTerm(term).getCources()
+        events = self.database.getEvent(email)
+        if len(events) == 0:
+            return []
+
+        results = []
+        for cource in cources:
+            maxsim = -1.0
+            e = None
+            for event in events:
+                sim = cosine_similarity(
+                    [np.array(cource.get('token')), np.array(event.get('token'))])[0][1]
+                if e == None or sim > maxsim:
+                    maxsim = sim
+                    e = event
+            results.append((maxsim, cource))
+
+        results.sort(key=lambda a: a[0])
+        ret = []
+        for i in range(5):
+            ret.append(results[-i - len(events) - 1][1])
+        return ret
