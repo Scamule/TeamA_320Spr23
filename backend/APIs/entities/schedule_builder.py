@@ -43,53 +43,55 @@ class ScheduleBuilder():
             csp.append(Event(classes))
             csp.append(Event(discussions))
 
-            schedules = set()
+        schedules = set()
 
-            def solveCsp(queue, events_list):
-                if len(events_list) == 0:
-                    schedules.add(hashable(queue))
-                    return
-                event = events_list.pop(0)
-                for section in event.sections:
-                    if checkIfValid(queue, section):
-                        solveCsp(queue + [section], events_list)
+        print(csp)
 
-            def checkIfValid(queue, section):
-                for s in queue:
-                    days = section.get('days')
-                    for day in s.get('days'):
-                        if day in days:
-                            if section.get('start_time') <= s.get('end_time') and section.get('end_time') >= s.get('start_time'):
-                                return False
-                return True
+        def solveCsp(queue, events_list):
+            if len(events_list) == 0:
+                schedules.add(hashable(queue))
+                return
+            event = events_list.pop(0)
+            for section in event.sections:
+                if checkIfValid(queue, section):
+                    solveCsp(queue + [section], events_list)
 
-            def hash(x):
-                x = x.copy()
-                days = x.get('days')
-                x['days'] = tuple(days)
-                x['start_time'] = x['start_time'].strftime("%H:%M:%S")
-                x['end_time'] = x.get('end_time').strftime("%H:%M:%S")
-                items = x.items()
-                return tuple(sorted(items))
+        def checkIfValid(queue, section):
+            for s in queue:
+                days = section.get('days')
+                for day in s.get('days'):
+                    if day in days:
+                        if section.get('start_time') <= s.get('end_time') and section.get('end_time') >= s.get('start_time'):
+                            return False
+            return True
 
-            def hashable(queue):
-                return tuple(map(lambda x: hash(x), queue))
+        def hash(x):
+            x = x.copy()
+            days = x.get('days')
+            x['days'] = tuple(days)
+            x['start_time'] = x['start_time'].strftime("%H:%M:%S")
+            x['end_time'] = x.get('end_time').strftime("%H:%M:%S")
+            items = x.items()
+            return tuple(sorted(items))
 
-            def convertBack(input):
-                output = []
-                for group in input:
-                    sections = []
-                    for section in group:
-                        section_dict = dict(section)
-                        section_dict['days'] = list(section_dict['days'])
-                        sections.append(section_dict)
-                    output.append(sections)
-                return output
+        def hashable(queue):
+            return tuple(map(lambda x: hash(x), queue))
 
-            for e in csp:
-                solveCsp([], csp.copy())
+        def convertBack(input):
+            output = []
+            for group in input:
+                sections = []
+                for section in group:
+                    section_dict = dict(section)
+                    section_dict['days'] = list(section_dict['days'])
+                    sections.append(section_dict)
+                output.append(sections)
+            return output
 
-            return convertBack(list(schedules))
+        for e in csp:
+            solveCsp([], csp.copy())
+        print(list(schedules))
+        return convertBack(list(schedules))
 
 
 class Event():
