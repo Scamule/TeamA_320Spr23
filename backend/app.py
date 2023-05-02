@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -44,14 +45,12 @@ def jwt_required(func):
 
 @app.route('/user/login', methods=['POST'])
 def userLogin():
-
     try:
         json_data = request.get_json()
         email = json_data.get('email')
         password = json_data.get('password')
     except:
         return make_response("BAD REQUEST: missing argument(email, password)", 400)
-
 
 
     user = database.auth_user(email, password)
@@ -62,18 +61,19 @@ def userLogin():
 
     if user:
         token = jwt.encode(
-            {'user_id': user['id'], 'user_firstName': user['firstName'],
+            {'user_id': user['email'],
              'exp': datetime.utcnow() + timedelta(days=1)},
             os.getenv('JWT_SECRET'))
 
         return make_response(jsonify({'token': token}), 200)
     else:
-        return make_response('Invalid Login', 401)
+        return make_response('Email and Password do not match', 401)
 
 
 @app.route('/test/protectedRoute', methods=['GET'])
 @jwt_required
 def get_user_name(data):
+    print(request.headers)
     return make_response(jsonify(data['user_firstName']), 200)
 
 
@@ -82,10 +82,9 @@ def userValidateEmail():
     json = request.get_json()
     email = json.get('email')
     code = random.randint(100000, 999999)
-    res = email_sender.send_email(
-        os.getenv('SENDER_EMAIL'), email, 'Email verification', 'Here is your confirmation code: ' + str(code))
-    if res != None:
-        return "Exception: " + str(res)
+    # res = email_sender.send_email(os.getenv('SENDER_EMAIL'), email, 'Email verification', 'Here is your confirmation code: ' + str(code))
+    # if res != None:
+    #     return "Exception: " + str(res)
     return str(code)
 
 
@@ -96,10 +95,10 @@ def userRecoverPassword():
     if not database.user_exists(email):
         return "Exception: user does not exist"
     code = random.randint(100000, 999999)
-    res = email_sender.send_email(
-        os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))
-    if res != None:
-        return "Exception: " + str(res)
+    # res = email_sender.send_email(
+    #     os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))
+    # if res != None:
+    #     return "Exception: " + str(res)
     return str(code)
 
 
@@ -118,7 +117,8 @@ def userSignup():
 
 
 @app.route('/events/get', methods=['POST'])
-def getEvents():
+@jwt_required
+def getEvents(data):
     jobj = request.get_json()
     query = jobj.get('query')
     return json.dumps(spire_api.getRelevantClasses(query, 10))

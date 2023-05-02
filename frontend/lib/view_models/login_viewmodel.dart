@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uscheduler/repositories/user_repository.dart';
-
+import 'dart:convert';
 import '../repositories/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../utils/status.dart';
 
 @singleton
 class LoginViewModel extends ChangeNotifier {
   final UserRepository _userRepository;
   final SharedPreferencesRepo _sharedPreferences;
+  final storage = new FlutterSecureStorage();
+
   String? verificationCode;
   String? recoveryCode;
 
@@ -34,12 +37,9 @@ class LoginViewModel extends ChangeNotifier {
     var response = await _userRepository.loginUser(data);
     if (response is Success) {
       var res = response.response as String;
-      if (res == "-1") {
-        return "Incorrect login or password";
-      } else {
         _sharedPreferences.saveIsLoggedIn(true);
+        await storage.write(key: 'jwt', value: jsonDecode(res)['token']);
         return null;
-      }
     }
     if (response is Failure) {
       return response.errorResponse as String;
