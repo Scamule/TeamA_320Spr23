@@ -7,7 +7,7 @@ app:
 	python app.py
 
 mongodb:
-	mongod 
+	mongod --dbpath /usr/local/var/mongodb 
 
 setup: requirements.txt
 	pip install -r requirements.txt

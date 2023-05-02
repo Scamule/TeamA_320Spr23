@@ -44,6 +44,8 @@ dependencies:
   get_it: ^7.2.0
   json_annotation: ^4.7.0
   debounce_throttle: ^2.0.0
+  intl: ^0.18.0
+  line_awesome_flutter: ^2.0.0
 
 
 dev_dependencies:
