@@ -12,6 +12,7 @@ from utils.email_sender import EmailSender
 from dotenv import load_dotenv
 import random
 from APIs.spire_api import SpireAPI
+from APIs.entities.schedule_builder import ScheduleBuilder
 import json
 
 load_dotenv()
@@ -22,26 +23,31 @@ database = Database(client)
 email_sender = EmailSender(smtp_server='smtp.gmail.com', smtp_port=587,
                            username=os.getenv('SENDER_EMAIL'), password=os.getenv('SENDER_PASSWORD'))
 spire_api = SpireAPI()
-
+schedule_builder = ScheduleBuilder()
 # client.server_info()
+
 
 def jwt_required(func):
     @wraps(func)
     def decorated(*args, **kwargs):
-        auth_header = request.headers.get('Authorization', None)
-        if not auth_header:
+        try:
+            auth_header = request.headers.get('Authorization', None)
+        except:
             return make_response(jsonify({'message': 'Authorization header is required'}), 401)
 
         token = auth_header.split(' ')[1]
 
+        data = jwt.decode(token, os.getenv(
+            'JWT_SECRET'), algorithms=["HS256"])
         try:
-            data = jwt.decode(token, os.getenv('JWT_SECRET'), algorithms=["HS256"])
+            data = jwt.decode(token, os.getenv(
+                'JWT_SECRET'), algorithms=["HS256"])
         except:
             return make_response(jsonify({'message': 'Invalid token'}), 401)
 
         return func(data, *args, **kwargs)
-
     return decorated
+
 
 @app.route('/user/login', methods=['POST'])
 def userLogin():
@@ -52,18 +58,14 @@ def userLogin():
     except:
         return make_response("BAD REQUEST: missing argument(email, password)", 400)
 
-
     user = database.auth_user(email, password)
-    # user = {}
-    # user['firstName'] = "testusername"
-    # user['id'] = 7
-
-
-    if user:
+    if user != None:
+        exp = datetime.utcnow() + timedelta(days=1)
+        exp = exp.timestamp()
         token = jwt.encode(
-            {'user_id': user['email'],
-             'exp': datetime.utcnow() + timedelta(days=1)},
-            os.getenv('JWT_SECRET'))
+            {'email': email,
+             'exp': exp},
+            os.getenv('JWT_SECRET'), algorithm="HS256")
 
         return make_response(jsonify({'token': token}), 200)
     else:
@@ -118,10 +120,46 @@ def userSignup():
 
 @app.route('/events/get', methods=['POST'])
 @jwt_required
-def getEvents(data):
+def getEvents(jwt_data):
     jobj = request.get_json()
     query = jobj.get('query')
     return json.dumps(spire_api.getRelevantClasses(query, 10))
+
+
+@app.route('/user/events/add', methods=['POST'])
+@jwt_required
+def addEvent(jwt_data):
+    jobj = request.get_json()
+    event = jobj.get('event')
+    return str(database.addEvent(jwt_data.get('email'), event))
+
+
+@app.route('/user/events/delete', methods=['POST'])
+@jwt_required
+def deleteEvent(jwt_data):
+    jobj = request.get_json()
+    event = jobj.get('event')
+    return str(database.deleteEvent(jwt_data.get('email'), event))
+
+
+@app.route('/user/events/get', methods=['POST'])
+@jwt_required
+def getEvent(jwt_data):
+    return json.dumps(database.getEvent(jwt_data.get('email')))
+
+
+@app.route('/user/events/suggest', methods=['POST'])
+@jwt_required
+def suggestEvents(jwt_data):
+    return json.dumps(spire_api.suggestEvents(jwt_data.get('email')))
+
+
+@app.route('/user/schedule/generate', methods=['POST'])
+@jwt_required
+def generateSchedules(jwt_data):
+    print(json.dumps(schedule_builder.getAllPossibleSchedules(
+        database.getEvent(jwt_data.get('email')))))
+    return json.dumps(schedule_builder.getAllPossibleSchedules(database.getEvent(jwt_data.get('email'))))
 
 
 if __name__ == '__main__':

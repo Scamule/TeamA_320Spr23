@@ -1,232 +1,84 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 import 'package:uscheduler/views/pages/find_event_page.dart';
 
-import '../../components/event_adding.dart';
 import '../../models/course.dart';
-import '../../models/utils.dart';
-import '../../utils/navigation_service.dart';
+import '../../utils/status.dart';
+import '../../view_models/home_viewmodel.dart';
 
-Widget builderFragment() {
-  BuildContext? context = NavigationService.navigatorKey.currentContext;
-  return Scaffold(
-    floatingActionButton: FloatingActionButton(
-      child: const Icon(Icons.add),
-      onPressed: () => {
-        Navigator.of(context!).push(MaterialPageRoute(
-          builder: (context) => const FindEventPage(),
-        ))
-      },
-    ),
-  );
-}
-class EventEditingPage extends StatefulWidget {
-  final Course? event;
-
-  const EventEditingPage({
-    Key? key,
-    this.event,
-  }) : super(key: key);
+class BuilderFragment extends StatefulWidget {
+  const BuilderFragment({super.key});
 
   @override
-  State<EventEditingPage> createState() => _EventEditingPageState();
+  State<StatefulWidget> createState() => _BuilderFragmentState();
 }
 
-class _EventEditingPageState extends State<EventEditingPage> {
-  final form_key = GlobalKey<FormState>();
-  final titleController = TextEditingController();
-  late DateTime fromDate;
-  late DateTime toDate;
+class _BuilderFragmentState extends State<BuilderFragment> {
+  final HomeViewModel _homeViewModel = GetIt.instance<HomeViewModel>();
 
   @override
-  void initState() {
-    super.initState();
-
-    if (widget.event == null) {
-      fromDate = DateTime.now();
-      toDate = DateTime.now().add(Duration(hours: 2));
-    }
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          leading: CloseButton(),
-          actions: editingActions(),
-        ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(12),
-          child: Form(
-            key: form_key,
-            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              buildTitle(),
-              SizedBox(height: 12),
-              buildDateTime(),
-            ]),
-          ),
-        ),
-      );
-
-  List<Widget> editingActions() => [
-        ElevatedButton.icon(
-            onPressed: saveForm,
-            label: Text('Save'),
-            icon: Icon(Icons.done),
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent)),
-        //label: Text('Save'),
-      ];
-
-  Widget buildTitle() => TextFormField(
-        style: const TextStyle(fontSize: 24),
-        decoration: const InputDecoration(
-            border: UnderlineInputBorder(), hintText: 'Add Title'),
-        onFieldSubmitted: (_) => saveForm(),
-        validator: (title) =>
-            title != null && title.isEmpty ? 'Title can not be empty' : null,
-        controller: titleController,
-      );
-
-  Widget buildDateTime() => Column(
-        children: [
-          buildFrom(),
-          buildTo(),
-        ],
-      );
-
-  Widget buildFrom() => buildHeader(
-        header: 'FROM',
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: buildDropdown(
-                text: Utils.toDate(fromDate),
-                onClicked: () => pickFromDateTime(pickDate: true),
-              ),
-            ),
-            Expanded(
-              child: buildDropdown(
-                text: Utils.toTime(fromDate),
-                onClicked: () => pickFromDateTime(pickDate: false),
-              ),
-            )
-          ],
-        ),
-      );
-  Widget buildTo() => buildHeader(
-        header: 'TO',
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: buildDropdown(
-                text: Utils.toDate(toDate),
-                onClicked: () => pickToDateTime(pickDate: true),
-              ),
-            ),
-            Expanded(
-              child: buildDropdown(
-                text: Utils.toTime(toDate),
-                onClicked: () => pickToDateTime(pickDate: false),
-              ),
-            )
-          ],
-        ),
-      );
-
-  Widget buildDropdown(
-          {required String text, required VoidCallback onClicked}) =>
-      ListTile(
-          title: Text(text),
-          trailing: const Icon(Icons.arrow_drop_down),
-          onTap: onClicked);
-
-  Widget buildHeader({required String header, required Row child}) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(header, style: const TextStyle(fontWeight: FontWeight.bold)),
-        child,
-      ]);
-
-  Future pickFromDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(fromDate,
-        pickDate: pickDate, firstDate: pickDate ? fromDate : null);
-    if (date == null) {
-      return;
-    }
-    if (date.isAfter(toDate)) {
-      toDate =
-          DateTime(date.year, date.month, date.day, date.hour, date.minute);
-    }
-    setState(() => fromDate = date);
-  }
-
-  Future pickToDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(toDate,
-        pickDate: pickDate, firstDate: pickDate ? toDate : null);
-    if (date == null) {
-      return;
-    }
-    if (date.isAfter(toDate)) {
-      toDate =
-          DateTime(date.year, date.month, date.day, date.hour, date.minute);
-    }
-    setState(() => toDate = date);
-  }
-
-  Future<DateTime?> pickDateTime(
-    DateTime initialDate, {
-    required bool pickDate,
-    DateTime? firstDate,
-  }) async {
-    if (pickDate) {
-      final date = await showDatePicker(
-        context: context,
-        initialDate: initialDate,
-        firstDate: firstDate ?? DateTime(2002, 01),
-        lastDate: DateTime(2100),
-      );
-      if (date == null) {
-        return null;
-      }
-      final time =
-          Duration(hours: initialDate.hour, minutes: initialDate.minute);
-      return date.add(time);
-    } else {
-      final timeOfDay = await showTimePicker(
-          context: context, initialTime: TimeOfDay.fromDateTime(initialDate));
-
-      if (timeOfDay == null) {
-        return null;
-      }
-
-      final date =
-          DateTime(initialDate.year, initialDate.month, initialDate.day);
-      final time = Duration(hours: timeOfDay.hour, minutes: timeOfDay.minute);
-      return date.add(time);
-    }
-  }
-
-  Future saveForm() async {
-    final isValid = form_key.currentState!.validate();
-    if (isValid) {
-      final event = Course(
-          title: titleController.text,
-          description: 'Description',
-          from: fromDate,
-          to: toDate);
-
-      final adder = Provider.of<EventAdding>(context, listen: false);
-      adder.addEvent(event);
-      Navigator.of(context).pop();
-    }
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder(
+        future: _homeViewModel.getEvents(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            var results = <Course>[];
+            var response = snapshot.data;
+            if (response is Failure) {
+              return Center(
+                child: Text(
+                  jsonDecode(response.errorResponse as String)["message"],
+                  style: const TextStyle(fontSize: 18),
+                ),
+              );
+            }
+            var res = jsonEncode(response);
+            results = courseFromJson(res);
+            return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return ListView.builder(
+                itemCount: results.length,
+                itemBuilder: (context, index) {
+                  var result = results[index];
+                  return ListTile(
+                    title: Text(result.id ?? ""),
+                    trailing: SizedBox(
+                      width: 70,
+                      child: IconButton(
+                        onPressed: () {
+                          _homeViewModel.deleteEvent(results[index]);
+                          results.removeAt(index);
+                          setState(() {
+                            results = results;
+                          });
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ),
+                  );
+                },
+              );
+            });
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(
+                builder: (context) => const FindEventPage(),
+              ))
+              .then((value) => setState(() {}))
+        },
+      ),
+    );
   }
 }

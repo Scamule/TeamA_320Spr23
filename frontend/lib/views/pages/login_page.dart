@@ -43,14 +43,15 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _loginViewModel.isLoggedIn.then((value) => {
-          if (value)
-            {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ))
-            }
-        });
+    _loginViewModel.isLoggedIn.then((value) =>
+    {
+      if (value)
+        {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ))
+        }
+    });
 
     return FlutterLogin(
       onRecoverPassword: _recoverPassword,
@@ -60,6 +61,11 @@ class LoginPage extends StatelessWidget {
       onResendCode: _resendCode,
       onConfirmRecover: _confirmRecover,
       title: 'UScheduler',
+      onSubmitAnimationCompleted: () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ));
+      },
     );
   }
 }

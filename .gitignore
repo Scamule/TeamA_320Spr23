@@ -1,2 +1,4 @@
 .env
-/backend/.env
+backend/.env
+frontend/macos
+.gitignore

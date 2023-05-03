@@ -1,60 +1,63 @@
 import requests
 from datetime import datetime, date
 from .entities.cources_filter import CourcesFilter
+from db.database import Database
+from pymongo import MongoClient
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 
 class SpireAPI:
     def __init__(self):
-        pass
+        client = MongoClient()
+        self.database = Database(client)
 
     def getRelevantClasses(self, query, num_classes):
-        max_pages = 5
-        c = 0
-        courses = []
-        next_page = "https://spire-api.melanson.dev/courses/"
-        params = {'search': query}
-        while True:       # Python does not have do-while loops so sorry for that trash
-            response = requests.get(next_page, params=params)
-            if response.status_code != 200:
-                raise Exception("API is unavailable")
-            response = response.json()
-            courses.extend(response.get('results'))
-            next_page = response.get('next')
-            if next_page == None or c == max_pages:
-                break
-            c += 1
+        courses = self.database.searchforCources(query)
         term = self.getClosestTerm().get('id')
         return CourcesFilter(courses).filterOfferingsByTerm(term).max(num_classes).getCources()
 
     def getAllTerms(self):
-        terms = []
-        next_page = "https://spire-api.melanson.dev/terms/"
-        while True:  # Python does not have do-while loops so sorry for that trash
-            response = requests.get(next_page)
-            if response.status_code != 200:
-                raise Exception("API is unavailable")
-            response = response.json()
-            terms.extend(response.get('results'))
-            next_page = response.get('next')
-            if next_page == None:
-                break
-        return terms
+        return self.database.getAllTerms()
+
+    def request(self, url):
+        return requests.get(url).json()
 
     def getClosestTerm(self):
         terms = self.getAllTerms()
-        dates = []
         cur_date = date.today()
         for i, term in enumerate(terms):
             start_date = datetime.strptime(
                 term.get('start_date'), '%Y-%m-%d').date()
             end_date = datetime.strptime(
                 term.get('end_date'), '%Y-%m-%d').date()
-
             if cur_date > start_date or cur_date < start_date and cur_date > end_date:
                 return terms[i]
 
         return terms[-1]
 
+    def suggestEvents(self, email):
+        term = self.getClosestTerm().get('id')
+        cources = CourcesFilter(self.database.getAllCources(
+        )).filterOfferingsByTerm(term).getCources()
+        events = self.database.getEvent(email)
+        if len(events) == 0:
+            return []
 
-api = SpireAPI()
-print(api.getRelevantClasses('250', 0))
+        results = []
+        for cource in cources:
+            maxsim = -1.0
+            e = None
+            for event in events:
+                sim = cosine_similarity(
+                    [np.array(cource.get('token')), np.array(event.get('token'))])[0][1]
+                if e == None or sim > maxsim:
+                    maxsim = sim
+                    e = event
+            results.append((maxsim, cource))
+
+        results.sort(key=lambda a: a[0])
+        ret = []
+        for i in range(5):
+            ret.append(results[-i - len(events) - 1][1])
+        return ret
