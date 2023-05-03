@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
           title: 'MVVM',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.purple,
             brightness: Brightness.light,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
