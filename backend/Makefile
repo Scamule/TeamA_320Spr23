@@ -4,10 +4,10 @@ run: setup
 	make -j 2 app mongodb
 	
 app: 
-	python app.py
+	python3 app.py
 
 mongodb:
-	mongod --dbpath /usr/local/var/mongodb 
+	mongod --dbpath /Users/samhigh/Development/MongoDB/db
 
 setup: requirements.txt
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
