@@ -64,16 +64,17 @@ class _FindEventPageState extends State<FindEventPage> {
             var events = _homeViewModel.getEvents();
             return StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
-              events.then((list) => {
-                    for (var i = 0; i < results.length; i++)
-                      {
-                        list.forEach((e) => {
-                              if (e['id'] == results[i].id)
-                                {isClicked[i] = true}
-                            })
-                      },
-                    setState(() {})
-                  });
+              events.then(
+                (list) => {
+                  for (var i = 0; i < results.length; i++)
+                    {
+                      list.forEach((e) => {
+                            if (e['id'] == results[i].id) {isClicked[i] = true}
+                          })
+                    },
+                  setState(() {})
+                },
+              );
               return ListView.builder(
                 itemCount: results.length,
                 itemBuilder: (context, index) {

@@ -34,14 +34,30 @@ class HomeViewModel extends ChangeNotifier {
     return response;
   }
 
+  /// Returns a List<dynamic> of all classes the user has in thei database,
+  /// returns <dynamic>[] on failure or if no classes in the database
   getEvents() async {
     var token = await _securedSharedPreferences.userToken;
+    if (token == "-1") {
+      debugPrint("Token was -1, not found");
+      return <dynamic>[];
+    }
     var response = await _eventsRepository.getEvents(token);
     if (response is Success) {
-      return jsonDecode(response.response as String) as List<dynamic>;
-    }
-    if (response is Failure) {
-      return response;
+      List<dynamic> result =
+          jsonDecode(response.response as String) as List<dynamic>;
+      // User has no classes
+      if (result.isEmpty) {
+        return <dynamic>[];
+      }
+      return result;
+    } else if (response is Failure) {
+      debugPrint("Failed to get events: ${response.errorResponse.toString()}");
+      return <dynamic>[];
+    } else {
+      debugPrint(
+          "Something went very wrong, response was neither a success nor failure, in getEvents()");
+      return <dynamic>[];
     }
   }
 

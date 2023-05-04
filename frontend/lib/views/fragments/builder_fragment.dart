@@ -48,6 +48,7 @@ class _BuilderFragmentState extends State<BuilderFragment> {
                     trailing: SizedBox(
                       width: 70,
                       child: IconButton(
+                        tooltip: "Delete class",
                         onPressed: () {
                           _homeViewModel.deleteEvent(results[index]);
                           results.removeAt(index);
