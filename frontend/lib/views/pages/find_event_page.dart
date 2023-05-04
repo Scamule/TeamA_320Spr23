@@ -50,7 +50,10 @@ class _FindEventPageState extends State<FindEventPage> {
           if (snapshot.connectionState == ConnectionState.done) {
             var results = <Course>[];
             var response = snapshot.data;
+            debugPrint("before check");
             if (response is Failure) {
+              debugPrint("failed");
+              debugPrint(response.errorResponse as String);
               return Center(
                 child: Text(
                   jsonDecode(response.errorResponse as String)["message"],

@@ -44,13 +44,9 @@ dependencies:
   get_it: ^7.2.0
   json_annotation: ^4.7.0
   debounce_throttle: ^2.0.0
-
   intl: ^0.18.0
   line_awesome_flutter: ^2.0.0
-  
-  flutter_secure_storage: ^5.0.2
-  secure_shared_preferences: ^0.0.4
-
+  flutter_secure_storage: ^8.0.0
   package_info: ^2.0.2
 
 

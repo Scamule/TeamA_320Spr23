@@ -41,7 +41,7 @@ class SpireAPI:
         cources = CourcesFilter(self.database.getAllCources(
         )).filterOfferingsByTerm(term).getCources()
         events = self.database.getEvent(email)
-        if len(events) == 0:
+        if events is None or len(events) == 0:
             return []
 
         results = []

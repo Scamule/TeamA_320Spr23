@@ -2,8 +2,18 @@ import 'dart:convert';
 
 import 'package:uscheduler/models/event.dart';
 
-List<Course> courseFromJson(String str) =>
-    List<Course>.from(json.decode(str).map((x) => Course.fromJson(x)));
+// DELETE WHEN DONE
+import 'package:flutter/foundation.dart' show debugPrint;
+
+List<Course> courseFromJson(String str) {
+  var decoded = json.decode(str);
+  debugPrint("doign stufff");
+  debugPrint("Half");
+  List<Course> value = (decoded == null)
+      ? (<Course>[])
+      : (List<Course>.from(json.decode(str).map((x) => Course.fromJson(x))));
+  return value;
+}
 
 String courseToJson(List<Course> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

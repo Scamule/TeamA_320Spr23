@@ -24,10 +24,14 @@ class _BuilderFragmentState extends State<BuilderFragment> {
       body: FutureBuilder(
         future: _homeViewModel.getEvents(),
         builder: (context, snapshot) {
+          debugPrint("checking connection");
           if (snapshot.connectionState == ConnectionState.done) {
+            debugPrint("state is done");
             var results = <Course>[];
             var response = snapshot.data;
+            debugPrint("Checking");
             if (response is Failure) {
+              debugPrint("response was failure");
               return Center(
                 child: Text(
                   jsonDecode(response.errorResponse as String)["message"],
@@ -35,8 +39,12 @@ class _BuilderFragmentState extends State<BuilderFragment> {
                 ),
               );
             }
+            debugPrint("getting courses");
+            debugPrint("Calling json encode on response");
             var res = jsonEncode(response);
+            debugPrint("calling courseFromJson");
             results = courseFromJson(res);
+            debugPrint("successfully got courses, returning");
             return StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return ListView.builder(
@@ -63,6 +71,7 @@ class _BuilderFragmentState extends State<BuilderFragment> {
               );
             });
           } else {
+            debugPrint("state is not done");
             return const Center(
               child: CircularProgressIndicator(),
             );

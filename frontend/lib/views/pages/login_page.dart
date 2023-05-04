@@ -43,15 +43,14 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _loginViewModel.isLoggedIn.then((value) =>
-    {
-      if (value)
-        {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ))
-        }
-    });
+    _loginViewModel.isLoggedIn.then((value) => {
+          if (value)
+            {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ))
+            }
+        });
 
     return FlutterLogin(
       onRecoverPassword: _recoverPassword,
