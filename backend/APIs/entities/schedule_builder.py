@@ -21,26 +21,32 @@ class ScheduleBuilder():
             classes = []
             discussions = []
             for s in self.spire_api.request(offering.get('url')).get('sections'):
+            
                 desc = self.spire_api.request(s.get('url')).get(
                     'meeting_information')[0].get('schedule')
                 start, end, id, days = None, None, e.get('id'), None
+            
+                # Check to make sure desc is not None
                 if(desc is not None):
+                    # We can call desc.get, update parameters with supplied data from desc
                     start, end, days = desc.get('start_time'), desc.get('end_time'), desc.get('days')
-                    obj = {
-                            'id': id,
-                            'start_time': datetime.strptime(start, '%H:%M:%S') if start is not None else None,
-                            'end_time': datetime.strptime(end, '%H:%M:%S') if end is not None else None,
-                            'days': days
-                        }         
-                    if "LEC" in s.get('spire_id'):
-                        classes.append(obj)
-                    else:
-                        discussions.append(obj)
+            
+                # Put data in object
+                obj = {
+                        'id': id,
+                        'start_time': datetime.strptime(start, '%H:%M:%S') if start is not None else None,
+                        'end_time': datetime.strptime(end, '%H:%M:%S') if end is not None else None,
+                        'days': days
+                }
+                
+                # Lecture or discussion       
+                if "LEC" in s.get('spire_id'):
+                    classes.append(obj)
                 else:
-                    continue
+                    discussions.append(obj)
 
-            csp.append(Event(classes))
-            csp.append(Event(discussions))
+        csp.append(Event(classes))
+        csp.append(Event(discussions))
 
         schedules = set()
 
