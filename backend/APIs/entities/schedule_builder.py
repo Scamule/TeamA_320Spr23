@@ -21,24 +21,27 @@ class ScheduleBuilder():
             classes = []
             discussions = []
             for s in self.spire_api.request(offering.get('url')).get('sections'):
-                if "LEC" in s.get('spire_id'):
-                    desc = self.spire_api.request(s.get('url')).get(
-                        'meeting_information')[0].get('schedule')
-                    classes.append({
-                        'id': e.get('id'),
-                        'days': desc.get('days'),
-                        'start_time': datetime.strptime(desc.get('start_time'), '%H:%M:%S'),
-                        'end_time': datetime.strptime(desc.get('end_time'), '%H:%M:%S')
-                    })
+                desc = self.spire_api.request(s.get('url')).get(
+                    'meeting_information')[0].get('schedule')
+                start, end, id, days = desc.get('start_time'), desc.get('end_time'), e.get('id'), desc.get('days')
+                if(start is None or end is None):
+                    obj = {
+                            'id': id,
+                            'days': days,
+                            'start_time': None,
+                            'end_time': None
+                        }     
                 else:
-                    desc = self.spire_api.request(s.get('url')).get(
-                        'meeting_information')[0].get('schedule')
-                    discussions.append({
-                        'id': e.get('id'),
-                        'days': desc.get('days'),
-                        'start_time': datetime.strptime(desc.get('start_time'), '%H:%M:%S'),
-                        'end_time': datetime.strptime(desc.get('end_time'), '%H:%M:%S')
-                    })
+                    obj = {
+                            'id': id,
+                            'days': days,
+                            'start_time': datetime.strptime(start, '%H:%M:%S'),
+                            'end_time': datetime.strptime(end, '%H:%M:%S')
+                        }         
+                    if "LEC" in s.get('spire_id'):
+                        classes.append(obj)
+                    else:
+                        discussions.append(obj)
 
             csp.append(Event(classes))
             csp.append(Event(discussions))
