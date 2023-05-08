@@ -23,25 +23,21 @@ class ScheduleBuilder():
             for s in self.spire_api.request(offering.get('url')).get('sections'):
                 desc = self.spire_api.request(s.get('url')).get(
                     'meeting_information')[0].get('schedule')
-                start, end, id, days = desc.get('start_time'), desc.get('end_time'), e.get('id'), desc.get('days')
-                if(start is None or end is None):
+                start, end, id, days = None, None, e.get('id'), None
+                if(desc is not None):
+                    start, end, days = desc.get('start_time'), desc.get('end_time'), desc.get('days')
                     obj = {
                             'id': id,
-                            'days': days,
-                            'start_time': None,
-                            'end_time': None
-                        }     
-                else:
-                    obj = {
-                            'id': id,
-                            'days': days,
-                            'start_time': datetime.strptime(start, '%H:%M:%S'),
-                            'end_time': datetime.strptime(end, '%H:%M:%S')
+                            'start_time': datetime.strptime(start, '%H:%M:%S') if start is not None else None,
+                            'end_time': datetime.strptime(end, '%H:%M:%S') if end is not None else None,
+                            'days': days
                         }         
                     if "LEC" in s.get('spire_id'):
                         classes.append(obj)
                     else:
                         discussions.append(obj)
+                else:
+                    continue
 
             csp.append(Event(classes))
             csp.append(Event(discussions))
