@@ -9,13 +9,15 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
+//home page view seen after login
+//contains body and bottom navigation bar
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final List<Widget> _pages = <Widget>[
-    const ScheduleFragment(),
-    const BuilderFragment(),
-    accountFragment()
+    //different page views (seen as fragments)
+    const ScheduleFragment(),  //calendar that displays courses/events
+    const BuilderFragment(),  //tool to search and add to schedule
+    accountFragment() //profile page with user info
   ];
 
   @override
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
+           //three icons that lead to the different fragments
           NavigationDestination(
               icon: Icon(Icons.calendar_month), label: 'Schedule'),
           NavigationDestination(icon: Icon(Icons.build), label: 'Builder'),
@@ -34,6 +37,7 @@ class _HomePageState extends State<HomePage> {
         ],
         onDestinationSelected: (int index) {
           setState(() {
+            //sets page to be displayed
             _selectedIndex = index;
           });
         },

@@ -11,19 +11,24 @@ class LoginPage extends StatelessWidget {
 
   final LoginViewModel _loginViewModel = GetIt.instance<LoginViewModel>();
 
+  //the functions of the FlutterLogin widget
   Future<String?> _signupUser(SignupData data) async {
+    //creates new user
     return await _loginViewModel.validateEmail(data);
   }
 
   Future<String?> _loginUser(LoginData data) async {
+    //existing user
     return await _loginViewModel.loginUser(data);
   }
 
   Future<String?> _recoverPassword(String name) async {
+    //new password (needs to confirm recovery)
     return await _loginViewModel.recoverPassword(name);
   }
 
   Future<String?>? _confirmRecover(String code, LoginData data) async {
+    //if recovery code is correct then allow change of password else error
     if (code == _loginViewModel.recoveryCode) {
       return await _loginViewModel.changeUserPassword(data);
     }
@@ -31,6 +36,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<String?>? _confirmSignUp(String code, LoginData data) async {
+    //if verification code is correct then allow new user sign up else error
     if (code == _loginViewModel.verificationCode) {
       return await _loginViewModel.signUpUser(data);
     }
@@ -43,6 +49,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //if user is logged in then navigate to the homepage view
     _loginViewModel.isLoggedIn.then((value) => {
           if (value)
             {
@@ -52,6 +59,7 @@ class LoginPage extends StatelessWidget {
             }
         });
 
+    //returned obj
     return FlutterLogin(
       onRecoverPassword: _recoverPassword,
       onLogin: _loginUser,
@@ -61,6 +69,7 @@ class LoginPage extends StatelessWidget {
       onConfirmRecover: _confirmRecover,
       title: 'UScheduler',
       onSubmitAnimationCompleted: () {
+        //navigates to homepage if login is successful
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => const HomePage(),
         ));

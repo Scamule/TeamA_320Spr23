@@ -8,6 +8,7 @@ import 'package:uscheduler/repositories/user_repository.dart';
 
 import '../utils/status.dart';
 
+//extends ChangeNotifier which will display all changes made to listeners
 @singleton
 class LoginViewModel extends ChangeNotifier {
   final UserRepository _userRepository;
@@ -19,6 +20,7 @@ class LoginViewModel extends ChangeNotifier {
 
   signUpUser(LoginData data) async {
     var response = await _userRepository.signUpUser(data);
+    //returns null if the user does not exist
     if (response is Success) {
       var id = response.response;
       if (id == "-1") {
@@ -34,6 +36,8 @@ class LoginViewModel extends ChangeNotifier {
 
   loginUser(LoginData data) async {
     var response = await _userRepository.loginUser(data);
+    //sets a flag that user is logged in if successful
+    //else displays error message
     if (response is Success) {
       var res = jsonDecode(response.response as String);
       _securedSharedPreferences.saveUserToken(res["token"]);
@@ -47,6 +51,8 @@ class LoginViewModel extends ChangeNotifier {
 
   validateEmail(SignupData data) async {
     var response = await _userRepository.validateEmail(data);
+    //validation is successful if verif code matches user input & returns null
+    //else displays error message
     if (response is Success) {
       var res = response.response as String;
       if (res.split(" ")[0] == "Exception:") {
@@ -63,6 +69,8 @@ class LoginViewModel extends ChangeNotifier {
 
   recoverPassword(String data) async {
     var response = await _userRepository.recoverPassword(data);
+    //recovery is successful if recov code matches user input & returns null
+    //else displays error message
     if (response is Success) {
       var res = response.response as String;
       if (res.split(" ")[0] == "Exception:") {
@@ -82,9 +90,9 @@ class LoginViewModel extends ChangeNotifier {
     if (response is Success) {
       var res = response.response as String;
       if (res == "-1") {
-        return "The user does not exists";
+        return "The user does not exists"; //on failure
       } else {
-        return null;
+        return null; //on success
       }
     }
     if (response is Failure) {
@@ -92,10 +100,12 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
+  //getter function indicating if a user is logged in
   Future<bool> get isLoggedIn async {
     return await _securedSharedPreferences.isLoggedIn;
   }
 
+  //logs out user by changing .saveIsLoggedIn flag to false & clearing token
   logOut() {
     _securedSharedPreferences.saveIsLoggedIn(false);
     _securedSharedPreferences.saveUserToken("");

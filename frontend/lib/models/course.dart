@@ -60,6 +60,12 @@ class Course implements Event {
       url: json["url"],
       token: json["token"]);
 
+  get from => null;
+
+  get to => null;
+
+  get backgroundColor => null;
+
   Map<String, dynamic> toJson() => {
         "_updated_at": updatedAt?.toIso8601String(),
         "description": description,

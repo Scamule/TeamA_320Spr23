@@ -6,10 +6,11 @@ List<Section> sectionFromJson(String str) =>
 
 
 class Section {
-  final List<dynamic> days;
-  final DateTime endTime;
-  final String id;
-  final DateTime startTime;
+  final List<dynamic> days; //days of meeting
+  final DateTime endTime; //represents .to time for class
+  final String id; //unique ID
+  final DateTime startTime; //represents .from time for class
+
 
   Section({
     required this.days,
@@ -19,6 +20,7 @@ class Section {
   });
 
   factory Section.fromJson(Map<String, dynamic> json) {
+     //representing class section in JSON formatting
     DateFormat format = DateFormat('HH:mm:ss');
     return Section(
       days: json['days'].map((item) => item.toString()).toList(),

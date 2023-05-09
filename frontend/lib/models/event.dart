@@ -3,5 +3,6 @@ abstract class Event {
 }
 
 class EventType {
+  // ignore: constant_identifier_names
   static const String COURSE = "course";
 }
