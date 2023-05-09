@@ -2,4 +2,6 @@ flask==2.2.3
 pymongo==4.3.3
 bcrypt==4.0.1
 python-dotenv==0.21.1
+sentence_transformers==2.2.2
+scikit-learn==1.2.2
 PyJWT==2.6.0

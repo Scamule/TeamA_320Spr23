@@ -47,7 +47,7 @@ class LoginPage extends StatelessWidget {
           if (value)
             {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => HomePage(),
+                builder: (context) => const HomePage(),
               ))
             }
         });
@@ -60,6 +60,11 @@ class LoginPage extends StatelessWidget {
       onResendCode: _resendCode,
       onConfirmRecover: _confirmRecover,
       title: 'UScheduler',
+      onSubmitAnimationCompleted: () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ));
+      },
     );
   }
 }

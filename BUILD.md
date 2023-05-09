@@ -23,7 +23,7 @@ cd TeamA_320Spr23
   Dowload and setup MongoDB from https://www.mongodb.com/try/download/community.
 
   Add necessary credentials in `.env` file.
-  
+
   ```
   # ENV VARIABLES
   JWT_SECRET="keystothecity"
