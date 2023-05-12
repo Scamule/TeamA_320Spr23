@@ -8,7 +8,7 @@ Erica Picard, GitHub: ericapickard
 Team Members:\
 Pablo Almeida, GitHub: pabloooooo\
 Ian Anderson, GitHub:\
-Jackson Durant, GitHub:\
+Jackson Durant, GitHub:yodog5243\
 Sam High, GitHub:\
 Kassidy Khang, GitHub:\
 Alexander Lavrenenko, GitHub:\
