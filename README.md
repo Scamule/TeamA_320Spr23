@@ -9,7 +9,7 @@ Team Members:\
 Pablo Almeida, GitHub: pabloooooo\
 Ian Anderson, GitHub:\
 Jackson Durant, GitHub:yodog5243\
-Sam High, GitHub:\
+Sam High, GitHub: SammyPie\
 Kassidy Khang, GitHub:\
 Alexander Lavrenenko, GitHub:\
 Neha Mathew, GitHub:\
