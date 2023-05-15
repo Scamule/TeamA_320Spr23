@@ -15,11 +15,13 @@ class HomeViewModel extends ChangeNotifier {
 
   HomeViewModel(this._eventsRepository, this._securedSharedPreferences);
 
+  // retrieves clubs and classes based on the provided query
   Future<Status> getClubsAndClasses(String query) async {
     var token = await _securedSharedPreferences.userToken;
     return _eventsRepository.getClubsAndClasses(query, token);
   }
 
+  // adds an event to the user's schedule
   addEvent(Event event) async {
     var token = await _securedSharedPreferences.userToken;
     var response = await _eventsRepository.addEvent(event, token);
@@ -28,14 +30,16 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
+  // deletes an event from the user's schedule
   Future<Status> deleteEvent(Event event) async {
     var token = await _securedSharedPreferences.userToken;
     var response = await _eventsRepository.deleteEvent(event, token);
     return response;
   }
 
-  /// Returns a List<dynamic> of all classes the user has in thei database,
-  /// returns <dynamic>[] on failure or if no classes in the database
+  // retrieves all events (classes) from the user's schedule
+  // returns a List<dynamic> of events
+  // returns an empty list if there are no events or on failure
   getEvents() async {
     var token = await _securedSharedPreferences.userToken;
     if (token == "-1") {
@@ -46,7 +50,7 @@ class HomeViewModel extends ChangeNotifier {
     if (response is Success) {
       List<dynamic> result =
           jsonDecode(response.response as String) as List<dynamic>;
-      // User has no classes
+      // user has no classes
       if (result.isEmpty) {
         return <dynamic>[];
       }
@@ -61,6 +65,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
+  // retrieves suggested events (classes) for the user
   suggestEvents() async {
     var token = await _securedSharedPreferences.userToken;
     var response = await _eventsRepository.suggestEvents(token);
@@ -72,6 +77,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
+  // generates schedules based on the user's events (classes)
   generateSchedules() async {
     var token = await _securedSharedPreferences.userToken;
     var response = await _eventsRepository.generateSchedules(token);

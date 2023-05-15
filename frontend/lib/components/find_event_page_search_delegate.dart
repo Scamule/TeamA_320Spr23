@@ -22,6 +22,7 @@ class FindEventPageSearchDelegate extends SearchDelegate {
     _completer.complete(_homeViewModel.getClubsAndClasses(value));
   });
 
+  //provides the "clear" button to clear the search and empty the query
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -34,6 +35,7 @@ class FindEventPageSearchDelegate extends SearchDelegate {
     ];
   }
 
+  //provides the "back" button for exiting out of a search (closing the search)
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
@@ -44,15 +46,16 @@ class FindEventPageSearchDelegate extends SearchDelegate {
     );
   }
 
+  //takes in the query in the search and returns the specified information
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder(
-      future: _homeViewModel.getClubsAndClasses(query),
+    return FutureBuilder( //create an object that acts as a promise in JS to asynchronously deliver query information
+      future: _homeViewModel.getClubsAndClasses(query), 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           var results = <Course>[];
           var response = snapshot.data;
-          if (response is Failure) {
+          if (response is Failure) { //decode error message if the query fails
             return Center(
               child: Text(
                 jsonDecode(response.errorResponse as String)["message"],
@@ -60,13 +63,13 @@ class FindEventPageSearchDelegate extends SearchDelegate {
               ),
             );
           }
-          if (response is Success) {
+          if (response is Success) { //extract course data if the query works
             var res = response.response as String?;
             if (res != null) {
               results = courseFromJson(res);
             }
           }
-          List<bool?> isClicked = List.filled(results.length, false);
+          List<bool?> isClicked = List.filled(results.length, false); //stores the courses with the option of selecting each
           var events = _homeViewModel.getEvents();
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
@@ -74,7 +77,7 @@ class FindEventPageSearchDelegate extends SearchDelegate {
                   for (var i = 0; i < results.length; i++)
                     {
                       list.forEach((e) => {
-                            if (e['id'] == results[i].id) {isClicked[i] = true}
+                            if (e['id'] == results[i].id) {isClicked[i] = true} //populates isClicked with courses
                           })
                     },
                   setState(() {})
@@ -114,6 +117,8 @@ class FindEventPageSearchDelegate extends SearchDelegate {
     );
   }
 
+  //displays suggestions to a user search as they type into the search bar
+  //the body of this code is similar to that of buildResults, except the list dynamically changes along with the search
   @override
   Widget buildSuggestions(BuildContext context) {
     _debouncer.value = query;

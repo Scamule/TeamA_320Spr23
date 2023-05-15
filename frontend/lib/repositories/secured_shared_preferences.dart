@@ -4,8 +4,10 @@ import 'package:uscheduler/utils/extensions.dart';
 
 import 'package:flutter/foundation.dart' show debugPrint;
 
+//creates the class used to store any significant information for while the user is using the app
 @singleton
 class SecuredSharedPreferencesRepo {
+  //initialize the storage 
   final storage = const FlutterSecureStorage();
 
   /// Returns true if the user is logged in according to [storage],
@@ -21,6 +23,7 @@ class SecuredSharedPreferencesRepo {
     }
   }
 
+  //check if the user's login status is saved for when they switch pages or reload the app
   Future<void> saveIsLoggedIn(bool value) async {
     String isLoggedIn = value.toString();
     try {
@@ -44,6 +47,7 @@ class SecuredSharedPreferencesRepo {
     }
   }
 
+  //saves the user token that will be used to specify which database to query during API requests
   Future<void> saveUserToken(String userToken) async {
     try {
       return await storage.write(key: Preferences.user_token, value: userToken);
@@ -53,6 +57,7 @@ class SecuredSharedPreferencesRepo {
   }
 }
 
+//creates a class to store preferences that the user can possibly manipulate in settings
 class Preferences {
   Preferences._();
 
