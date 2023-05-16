@@ -31,7 +31,7 @@ Note: You will probably want two terminal instances open from this point on, one
   SENDER_PASSWORD=""
   ```
 
-  **mac**
+  - **mac**
     Download the MongoDB Community Server Download tgz from https://www.mongodb.com/try/download/community for your platform. The platform `macOS` is for Intel based macs, and `macOS ARM 64` is for M series macs. To check which one you are, go to the menu bar and go to Apple Icon > About This Mac. The `chip` attribute will tell you whether you have an Intel (x86) or M chip.
     After it is done downloading, unzip the file and move the new folder to a nice location.
     Inside this new folder, you will find a folder called `bin`. You need to add this folder location to your path. To do this, go to this link: https://osxdaily.com/2014/08/14/add-new-path-to-path-command-line/#:~:text=Setting%20PATH%20in%20Shell%20Profile, and it should bring you to the Setting PATH in Shell Profile section. Follow the instructions here. The path for the `bin` folder can be optained by right clicking in Finder and Option clicking the copy button, or by going to the folder in a terminal instance and typing `pwd`.
@@ -50,7 +50,7 @@ Note: You will probably want two terminal instances open from this point on, one
 
     Change the terminal instance to be inside `backend` and run `make run`.
 
-  **windows**
+  - **windows**
     Download Python from https://www.python.org. You can test if you installed Python correctly by running `python --version`.
     Dowload MongoDB Community Server Download from https://www.mongodb.com/try/download/community.
     Windows stuff...
