@@ -40,7 +40,7 @@ Note: You will probably want two terminal instances open from this point on, one
       If you get a `malicious software` error, that is good. You have everything set up properly and go to the System Settings > Security and Privacy and go down to the security section. There should be a prompt telling you to allow the `mongod` command. Click it. Run `mongod --version` again and click Open when it shows up.
     MongoDB should now be installed.
     To get MongoDB to work with the app, you need to make a database folder. This folder can go anywhere and be called anything. You can put it in TeamA_320Spr23 and add it to .gitignore to make sure the database doesn't get pushed to the GitHub.
-    Update the Makefile to run `mongod --dbpath FOLDER_PATH` (instead of jsut `mongod`) where FOLDER_PATH is the database folder path.
+    Update the Makefile to run `mongod --dbpath FOLDER_PATH` (instead of jsut `mongod`) where `FOLDER_PATH` is the database folder path.
     
     Download Python from https://www.python.org.
       You may need to add Python to your PATH. Follow the instructions used for MongoDB.
