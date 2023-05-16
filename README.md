@@ -12,7 +12,7 @@ Jackson Durant, GitHub:yodog5243\
 Sam High, GitHub: SammyPie\
 Kassidy Khang, GitHub:\
 Alexander Lavrenenko, GitHub:\
-Neha Mathew, GitHub:\
+Neha Mathew, GitHub: nehamathew20\
 Akash Mungra, GitHub:\
 Pranav Pallavalli, GitHub:
 
