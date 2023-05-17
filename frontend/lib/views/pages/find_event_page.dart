@@ -16,7 +16,7 @@ class FindEventPage extends StatefulWidget {
 }
 
 class _FindEventPageState extends State<FindEventPage> {
-  final HomeViewModel _homeViewModel = GetIt.instance<HomeViewModel>();
+  final HomeViewModel _homeViewModel = GetIt.instance<HomeViewModel>(); // Get an instance of HomeViewModel using GetIt
 
   Future<bool> _onWillPop() async {
     setState(() {});
@@ -25,7 +25,9 @@ class _FindEventPageState extends State<FindEventPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Function to be called when the search is closed
     onSearchClosed() => {setState(() => {})};
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search for events'),
@@ -34,10 +36,9 @@ class _FindEventPageState extends State<FindEventPage> {
             icon: const Icon(Icons.search),
             onPressed: () {
               showSearch(
-                      context: context,
-                      delegate:
-                          FindEventPageSearchDelegate(onClosed: onSearchClosed))
-                  .then((value) async {
+                context: context,
+                delegate: FindEventPageSearchDelegate(onClosed: onSearchClosed),
+              ).then((value) async {
                 setState(() {});
               });
             },
@@ -50,6 +51,8 @@ class _FindEventPageState extends State<FindEventPage> {
           if (snapshot.connectionState == ConnectionState.done) {
             var results = <Course>[];
             var response = snapshot.data;
+
+            // Check if the response is a Failure object
             if (response is Failure) {
               return Center(
                 child: Text(
@@ -58,49 +61,54 @@ class _FindEventPageState extends State<FindEventPage> {
                 ),
               );
             }
+
             var res = jsonEncode(response);
             results = courseFromJson(res);
             List<bool?> isClicked = List.filled(results.length, false);
+
             var events = _homeViewModel.getEvents();
+
             return StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-              events.then(
-                (list) => {
-                  for (var i = 0; i < results.length; i++)
-                    {
-                      list.forEach((e) => {
-                            if (e['id'] == results[i].id) {isClicked[i] = true}
-                          })
-                    },
-                  setState(() {})
-                },
-              );
-              return ListView.builder(
-                itemCount: results.length,
-                itemBuilder: (context, index) {
-                  var result = results[index];
-                  return ListTile(
-                    title: Text(result.id ?? ""),
-                    trailing: SizedBox(
-                      width: 70,
-                      child: Checkbox(
-                        value: isClicked[index],
-                        onChanged: (bool? val) {
-                          setState(() {
-                            isClicked[index] = val;
-                          });
-                          if (val!) {
-                            _homeViewModel.addEvent(results[index]);
-                          } else {
-                            _homeViewModel.deleteEvent(results[index]);
-                          }
-                        },
+              builder: (BuildContext context, StateSetter setState) {
+                // Retrieve events and update isClicked based on their presence in the list
+                events.then((list) {
+                  for (var i = 0; i < results.length; i++) {
+                    list.forEach((e) {
+                      if (e['id'] == results[i].id) {
+                        isClicked[i] = true;
+                      }
+                    });
+                  }
+                  setState(() {});
+                });
+
+                return ListView.builder(
+                  itemCount: results.length,
+                  itemBuilder: (context, index) {
+                    var result = results[index];
+                    return ListTile(
+                      title: Text(result.id ?? ""),
+                      trailing: SizedBox(
+                        width: 70,
+                        child: Checkbox(
+                          value: isClicked[index],
+                          onChanged: (bool? val) {
+                            setState(() {
+                              isClicked[index] = val;
+                            });
+                            if (val!) {
+                              _homeViewModel.addEvent(results[index]);
+                            } else {
+                              _homeViewModel.deleteEvent(results[index]);
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
-            });
+                    );
+                  },
+                );
+              },
+            );
           } else {
             return const Center(
               child: CircularProgressIndicator(),

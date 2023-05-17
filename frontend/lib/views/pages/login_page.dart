@@ -9,7 +9,7 @@ import 'home_page.dart';
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final LoginViewModel _loginViewModel = GetIt.instance<LoginViewModel>();
+  final LoginViewModel _loginViewModel = GetIt.instance<LoginViewModel>(); // Get an instance of LoginViewModel using GetIt
 
   Future<String?> _signupUser(SignupData data) async {
     return await _loginViewModel.validateEmail(data);
@@ -43,14 +43,14 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if the user is already logged in
     _loginViewModel.isLoggedIn.then((value) => {
-          if (value)
-            {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const HomePage(),
-              ))
-            }
-        });
+      if (value) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ))
+      }
+    });
 
     return FlutterLogin(
       onRecoverPassword: _recoverPassword,
