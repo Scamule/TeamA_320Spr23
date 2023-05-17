@@ -14,15 +14,15 @@ Note: You will probably want two terminal instances open from this point on, one
 - **Build Frontend**
 
   Download Flutter dependecies from https://docs.flutter.dev/get-started/install.
-
+    - It will tell you to run `flutter doctor` to ensure everything is installed. You only need the following: Flutter, Chrome, Connected device, HTTP Host Availability. The others are for emulators we are not using.
   Build dependencies by entering the directory `frontend` and running `flutter packages pub run build_runner build`.
   
   Then, from `frontend`, run the frontend by running the command `flutter run -d chrome`.
 
 - **Build Backend**
 
-  Add necessary credentials into an `.env` file.
-  If this file does not exist, use `touch .env` to create it.
+  Add necessary credentials into a `backend/.env` file.
+  If this file does not exist, enter *backend* using `cd backend` and use `touch .env` to create it.
 
   ```
   # ENV VARIABLES
@@ -49,6 +49,8 @@ Note: You will probably want two terminal instances open from this point on, one
     You can test if you installed Python correctly by running `python --version`. Your machine may not accept `python` as a command, so try `python3` instead. If `python3` works, change the Makefile to run `python3` where needed.
   3. You will need to install **pip**, you can do so by following this link: [How To Install Pip In MacOS](https://www.geeksforgeeks.org/how-to-install-pip-in-macos/).
   4. Type `pip --version` in the terminal to check if you have **pip** installed correctly or, similarly to python, try `pip3 --version` instead, and then update the Makefile if that works.
+      - If you have both **pip** and **pip3** on your Mac, you should make sure both of them are updated to the same version. To do this you can just run `pip install --upgrade pip` and `pip3 install --upgrade pip`. This will install the latest version of **pip** to both.
+      - Not doing this could result in some Python modules not getting properly installed causing the program to fail with *ModuleNotFoundError* errors.
 
   <br />Aftering getting both MongoDB, Python, and Pip working, change the terminal location using `cd backend` and run `make run`.
 
