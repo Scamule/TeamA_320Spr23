@@ -8,8 +8,9 @@ import 'package:flutter/foundation.dart' show debugPrint;
 class SecuredSharedPreferencesRepo {
   final storage = const FlutterSecureStorage();
 
-  /// Returns true if the user is logged in according to [storage],
-  /// returns false if not, or if an error occured
+  /// Getter to check if the user is logged in.
+  ///
+  /// Returns a [Future] with a boolean indicating the logged in status.
   Future<bool> get isLoggedIn async {
     try {
       String isLoggedIn =
@@ -21,6 +22,9 @@ class SecuredSharedPreferencesRepo {
     }
   }
 
+  /// Method to save the logged in status.
+  ///
+  /// Returns a [Future] indicating the completion of the operation.
   Future<void> saveIsLoggedIn(bool value) async {
     String isLoggedIn = value.toString();
     try {
@@ -31,8 +35,9 @@ class SecuredSharedPreferencesRepo {
     }
   }
 
-  /// Returns the user token in [storage] if it exists,
-  /// returns "-1" when it does not, or if an error occured
+  /// Getter to retrieve the user token.
+  ///
+  /// Returns a [Future] with the user token as a string.
   Future<String> get userToken async {
     try {
       String userToken =
@@ -44,6 +49,9 @@ class SecuredSharedPreferencesRepo {
     }
   }
 
+  /// Method to save the user token.
+  ///
+  /// Returns a [Future] indicating the completion of the operation.
   Future<void> saveUserToken(String userToken) async {
     try {
       return await storage.write(key: Preferences.user_token, value: userToken);

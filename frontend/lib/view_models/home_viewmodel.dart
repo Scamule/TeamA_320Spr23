@@ -15,6 +15,9 @@ class HomeViewModel extends ChangeNotifier {
 
   HomeViewModel(this._eventsRepository, this._securedSharedPreferences);
 
+  /// Get clubs and classes based on the provided [query].
+  ///
+  /// Returns a [Future] with the status of the operation.
   Future<Status> getClubsAndClasses(String query) async {
     var token = await _securedSharedPreferences.userToken;
     return _eventsRepository.getClubsAndClasses(query, token);
