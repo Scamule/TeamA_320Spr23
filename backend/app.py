@@ -20,11 +20,12 @@ load_dotenv()
 app = Flask(__name__)
 client = MongoClient()
 database = Database(client)
-email_sender = EmailSender(smtp_server='smtp.gmail.com', smtp_port=587,
-                           username=os.getenv('SENDER_EMAIL'), password=os.getenv('SENDER_PASSWORD'))
+email_sender = EmailSender(smtp_server='smtp.gmail.com', smtp_port=587, username=os.getenv(
+    'SENDER_EMAIL'), password=os.getenv('SENDER_PASSWORD'))
 spire_api = SpireAPI()
 schedule_builder = ScheduleBuilder()
-# client.server_info()
+
+# Define a decorator for requiring JWT authentication
 
 
 def jwt_required(func):
@@ -37,8 +38,7 @@ def jwt_required(func):
 
         token = auth_header.split(' ')[1]
 
-        data = jwt.decode(token, os.getenv(
-            'JWT_SECRET'), algorithms=["HS256"])
+        # Verify and decode the JWT token
         try:
             data = jwt.decode(token, os.getenv(
                 'JWT_SECRET'), algorithms=["HS256"])
@@ -49,6 +49,7 @@ def jwt_required(func):
     return decorated
 
 
+# Endpoint for user login
 @app.route('/user/login', methods=['POST'])
 def userLogin():
     try:
@@ -58,20 +59,21 @@ def userLogin():
     except:
         return make_response("BAD REQUEST: missing argument(email, password)", 400)
 
+    # Authenticate user credentials
     user = database.auth_user(email, password)
-    if user != None:
+    if user is not None:
+        # Generate a JWT token with the user's email and expiration time
         exp = datetime.utcnow() + timedelta(days=1)
         exp = exp.timestamp()
-        token = jwt.encode(
-            {'email': email,
-             'exp': exp},
-            os.getenv('JWT_SECRET'), algorithm="HS256")
+        token = jwt.encode({'email': email, 'exp': exp},
+                           os.getenv('JWT_SECRET'), algorithm="HS256")
 
         return make_response(jsonify({'token': token}), 200)
     else:
         return make_response('Email and Password do not match', 401)
 
 
+# Protected route that requires JWT authentication
 @app.route('/test/protectedRoute', methods=['GET'])
 @jwt_required
 def get_user_name(data):
@@ -79,67 +81,81 @@ def get_user_name(data):
     return make_response(jsonify(data['user_firstName']), 200)
 
 
+# Endpoint for validating user email
 @app.route('/user/validate_email', methods=['POST'])
 def userValidateEmail():
-    json = request.get_json()
-    email = json.get('email')
+    json_data = request.get_json()
+    email = json_data.get('email')
     code = random.randint(100000, 999999)
     # res = email_sender.send_email(os.getenv('SENDER_EMAIL'), email, 'Email verification', 'Here is your confirmation code: ' + str(code))
-    # if res != None:
+    # if res is not None:
     #     return "Exception: " + str(res)
     return str(code)
 
 
+# Endpoint for recovering user password
 @app.route('/user/recover_password', methods=['POST'])
 def userRecoverPassword():
-    json = request.get_json()
-    email = json.get('email')
+    json_data = request.get_json()
+    email = json_data.get('email')
     if not database.user_exists(email):
         return "Exception: user does not exist"
     code = random.randint(100000, 999999)
-    # res = email_sender.send_email(
-    #     os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))
-    # if res != None:
-    #     return "Exception: " + str(res)
+
+    # res = email_sender.send_email(os.getenv('SENDER_EMAIL'), email, 'Password recovery', 'Here is your recover password code: ' + str(code))
+    # if res is not None:
+    # return "Exception: " + str(res)
     return str(code)
+
+# Endpoint for changing user password
 
 
 @app.route('/user/change_password', methods=['POST'])
 def userChangePassword():
-    json = request.get_json()
-    email = json.get('email')
-    password = json.get('password')
+    json_data = request.get_json()
+    email = json_data.get('email')
+    password = json_data.get('password')
     return database.change_user_password(email, password)
+
+# Endpoint for user signup
 
 
 @app.route('/user/signup', methods=['POST'])
 def userSignup():
-    json = request.get_json()
-    return database.insert_new_user(json.get('email'), json.get('password'))
+    json_data = request.get_json()
+    return database.insert_new_user(json_data.get('email'), json_data.get('password'))
+
+# Endpoint for getting events
 
 
 @app.route('/events/get', methods=['POST'])
 @jwt_required
 def getEvents(jwt_data):
-    jobj = request.get_json()
-    query = jobj.get('query')
+    json_data = request.get_json()
+    query = json_data.get('query')
     return json.dumps(spire_api.getRelevantClasses(query, 10))
+
+# Endpoint for adding an event
 
 
 @app.route('/user/events/add', methods=['POST'])
 @jwt_required
 def addEvent(jwt_data):
-    jobj = request.get_json()
-    event = jobj.get('event')
+    json_data = request.get_json()
+    event = json_data.get('event')
     return str(database.addEvent(jwt_data.get('email'), event))
+
+# Endpoint for deleting an event
 
 
 @app.route('/user/events/delete', methods=['POST'])
 @jwt_required
 def deleteEvent(jwt_data):
-    jobj = request.get_json()
-    event = jobj.get('event')
+    json_data = request.get_json()
+    event = json_data.get('event')
     return str(database.deleteEvent(jwt_data.get('email'), event))
+
+# Endpoint for getting user events
 
 
 @app.route('/user/events/get', methods=['POST'])
@@ -147,11 +163,15 @@ def deleteEvent(jwt_data):
 def getEvent(jwt_data):
     return json.dumps(database.getEvent(jwt_data.get('email')))
 
+# Endpoint for suggesting events
+
 
 @app.route('/user/events/suggest', methods=['POST'])
 @jwt_required
 def suggestEvents(jwt_data):
     return json.dumps(spire_api.suggestEvents(jwt_data.get('email')))
+
+# Endpoint for generating schedules
 
 
 @app.route('/user/schedule/generate', methods=['POST'])
@@ -162,5 +182,6 @@ def generateSchedules(jwt_data):
     return json.dumps(schedule_builder.getAllPossibleSchedules(database.getEvent(jwt_data.get('email'))))
 
 
-if __name__ == '__main__':
+# Run the Flask application
+if __name__ == 'main':
     app.run(debug=True, port=3000)

@@ -22,7 +22,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _pages.elementAt(_selectedIndex), //New
+        child:
+            _pages.elementAt(_selectedIndex), // Display the selected fragment
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
@@ -34,10 +35,10 @@ class _HomePageState extends State<HomePage> {
         ],
         onDestinationSelected: (int index) {
           setState(() {
-            _selectedIndex = index;
+            _selectedIndex = index; // Update the selected index
           });
         },
-        selectedIndex: _selectedIndex,
+        selectedIndex: _selectedIndex, // Pass the selected index
       ),
     );
   }
