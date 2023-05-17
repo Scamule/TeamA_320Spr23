@@ -5,31 +5,31 @@ from datetime import datetime, date
 class ScheduleBuilder():
 
 
-"""
-ScheduleBuilder creates a class of functions intended on creating a schedule for a group of class information.
-This class information is going to be grabbed from spireAPI. This class will most likely be implemented by
-frontend to create the schedules for students. This class pulls all possible lectures and discussions using
-getAllPossibleSchedules, and then uses the remaing functions hash, hashable, checkifvalid, and solvecsp to
-create all possible schedules for the student.
-"""
+    """
+    ScheduleBuilder creates a class of functions intended on creating a schedule for a group of class information.
+    This class information is going to be grabbed from spireAPI. This class will most likely be implemented by
+    frontend to create the schedules for students. This class pulls all possible lectures and discussions using
+    getAllPossibleSchedules, and then uses the remaing functions hash, hashable, checkifvalid, and solvecsp to
+    create all possible schedules for the student.
+    """
 
     def __init__(self):
         self.spire_api = SpireAPI()
 
     def getAllPossibleSchedules(self, events):
-    """
-    getAllPosibleSchedules takes in a ScheduleBuilder object and an event List. It parses through
-    this list and for each event it grabs all of the offerings and determines if the offering is a
-    discussion or class. It then takes the relavant data: end,start,days,id and puts this into a classes
-    or discussion list.
+        """
+        getAllPosibleSchedules takes in a ScheduleBuilder object and an event List. It parses through
+        this list and for each event it grabs all of the offerings and determines if the offering is a
+        discussion or class. It then takes the relavant data: end,start,days,id and puts this into a classes
+        or discussion list.
 
 
-    param self: Schedule Builder object
-    param events: list of events
-    return: none (sets the classes and discussions to the given event)
-    """
-       # Define variables
-       term = self.spire_api.getClosestTerm().get('id')
+        param self: Schedule Builder object
+        param events: list of events
+        return: none (sets the classes and discussions to the given event)
+        """
+        # Define variables
+        term = self.spire_api.getClosestTerm().get('id')
         csp = []
         # loop through each event and grab the offerings
         for e in events:
@@ -87,33 +87,33 @@ create all possible schedules for the student.
                     solveCsp(queue + [section], events_list)
 
         def checkIfValid(queue, section):
-        """
-        checkIfValid takes in a queue and a section. It is a basic collision check to see that if a given class
-        can fit into the section data, mainly if it can fit into the day and time of the section.
+            """
+            checkIfValid takes in a queue and a section. It is a basic collision check to see that if a given class
+            can fit into the section data, mainly if it can fit into the day and time of the section.
 
-        param queue: a queue of classes
-        param section: a defined section that has data date and time
-        return: boolean: true if the queue works, false if any single class fails
-        """
-           # loop through each class in queue
-           for s in queue:
-                days = section.get('days')
-                # check if the class matches the sections day data
-                for day in s.get('days'):
-                    if day in days:
-                        # check if the section matches the time data
-                        if section.get('start_time') <= s.get('end_time') and section.get('end_time') >= s.get('start_time'):
-                            return False
+            param queue: a queue of classes
+            param section: a defined section that has data date and time
+            return: boolean: true if the queue works, false if any single class fails
+            """
+            # loop through each class in queue
+            for s in queue:
+                    days = section.get('days')
+                    # check if the class matches the sections day data
+                    for day in s.get('days'):
+                        if day in days:
+                            # check if the section matches the time data
+                            if section.get('start_time') <= s.get('end_time') and section.get('end_time') >= s.get('start_time'):
+                                return False
             return True
 
         def hash(x):
-        """
-        hashes a given input
+            """
+            hashes a given input
 
-        param x: input to be hashed
-        return: tuple of hashed input items
-        """
-           x = x.copy()
+            param x: input to be hashed
+            return: tuple of hashed input items
+            """
+            x = x.copy()
             days = x.get('days')
             x['days'] = tuple(days)
             x['start_time'] = x['start_time'].strftime("%H:%M:%S")
@@ -122,23 +122,23 @@ create all possible schedules for the student.
             return tuple(sorted(items))
 
         def hashable(queue):
-        """
-        implements the hash function
+            """
+            implements the hash function
 
-        param queue: a queue of classes
-        return: a tuple mapping the hash of x and the inputted queue
-        """
-           return tuple(map(lambda x: hash(x), queue))
+            param queue: a queue of classes
+            return: a tuple mapping the hash of x and the inputted queue
+            """
+            return tuple(map(lambda x: hash(x), queue))
 
         def convertBack(input):
-        """
-        convertBack takes in input and reverts it to a list of section dictionaries holding just a value for
-        days.
+            """
+            convertBack takes in input and reverts it to a list of section dictionaries holding just a value for
+            days.
 
-        param input: input is a list of lists
-        return: a list of lists of dictionaries holding days information
-        """
-           output = []
+            param input: input is a list of lists
+            return: a list of lists of dictionaries holding days information
+            """
+            output = []
             # loop through each item in input
             for group in input:
                 sections = []

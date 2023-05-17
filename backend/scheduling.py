@@ -1,5 +1,5 @@
 # Importing the SpireAPI module for interaction with some API.
-import SpireAPI as sp
+from .APIs.spire_api import SpireAPI as sp
 import itertools  # Importing the itertools module for later use.
 
 
