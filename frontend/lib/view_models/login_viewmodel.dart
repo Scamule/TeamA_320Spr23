@@ -18,6 +18,9 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(this._securedSharedPreferences, this._userRepository);
 
+  /// Method to sign up a user.
+  ///
+  /// Returns a [String] indicating the result of the operation. Returns null if successful.
   signUpUser(LoginData data) async {
     var response = await _userRepository.signUpUser(data);
     //returns null if the user does not exist
@@ -34,6 +37,9 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
+  /// Method to log in a user.
+  ///
+  /// Returns a [String] indicating the result of the operation. Returns null if successful.
   loginUser(LoginData data) async {
     var response = await _userRepository.loginUser(data);
     //sets a flag that user is logged in if successful
@@ -49,6 +55,9 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
+  /// Method to validate email.
+  ///
+  /// Returns a [String] indicating the result of the operation. Returns null if successful.
   validateEmail(SignupData data) async {
     var response = await _userRepository.validateEmail(data);
     //validation is successful if verif code matches user input & returns null
@@ -67,6 +76,9 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
+  /// Method to recover password.
+  ///
+  /// Returns a [String] indicating the result of the operation. Returns null if successful.
   recoverPassword(String data) async {
     var response = await _userRepository.recoverPassword(data);
     //recovery is successful if recov code matches user input & returns null
@@ -85,12 +97,15 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
+  /// Method to change user password.
+  ///
+  /// Returns a [String] indicating the result of the operation. Returns null if successful.
   changeUserPassword(LoginData data) async {
     var response = await _userRepository.changeUserPassword(data);
     if (response is Success) {
       var res = response.response as String;
       if (res == "-1") {
-        return "The user does not exists"; //on failure
+        return "The user does not exist"; //on failure
       } else {
         return null; //on success
       }
@@ -100,12 +115,14 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  //getter function indicating if a user is logged in
+  /// Getter to check if the user is logged in.
   Future<bool> get isLoggedIn async {
     return await _securedSharedPreferences.isLoggedIn;
   }
 
+
   //logs out user by changing .saveIsLoggedIn flag to false & clearing token
+  /// Method to log out the user.
   logOut() {
     _securedSharedPreferences.saveIsLoggedIn(false);
     _securedSharedPreferences.saveUserToken("");
