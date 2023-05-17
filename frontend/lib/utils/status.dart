@@ -1,3 +1,4 @@
+//error handling system
 class Success implements Status {
   Object response;
 
@@ -7,7 +8,7 @@ class Success implements Status {
 
 class Failure implements Status {
   int code;
-  Object errorResponse;
+  Object errorResponse; //displays error message tied w failure
 
   // Constructor for Failure class
   Failure({required this.code, required this.errorResponse});

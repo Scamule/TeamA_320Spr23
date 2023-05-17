@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 // Utility class for date and time formatting
+
 class Utils {
   /// Format a DateTime object to a formatted date and time string.
   ///
@@ -16,6 +17,7 @@ class Utils {
   ///
   /// Example output: "Jan 1, 2022"
   static String toDate(DateTime dateTime) {
+    
     final date = DateFormat.yMMMEd().format(dateTime); // Format the date
 
     return '$date'; // Return the formatted date

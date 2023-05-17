@@ -8,6 +8,7 @@ import '../../models/course.dart';
 import '../../utils/status.dart';
 import '../../view_models/home_viewmodel.dart';
 
+//displays list of classes fetched async
 class BuilderFragment extends StatefulWidget {
   const BuilderFragment({super.key});
 
@@ -21,10 +22,12 @@ class _BuilderFragmentState extends State<BuilderFragment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //widget returns FutureBuilder and Floatingbutton
       body: FutureBuilder(
         future: _homeViewModel.getEvents(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            //if true the course is displayed on the ListView widget
             var results = <Course>[];
             var response = snapshot.data;
             if (response is Failure) {
@@ -35,6 +38,8 @@ class _BuilderFragmentState extends State<BuilderFragment> {
                 ),
               );
             }
+            //returns a ListView widget
+            //parsed by JSON data returned by .getEvents()
             var res = jsonEncode(response);
             results = courseFromJson(res);
             return StatefulBuilder(
@@ -50,9 +55,11 @@ class _BuilderFragmentState extends State<BuilderFragment> {
                       child: IconButton(
                         tooltip: "Delete class",
                         onPressed: () {
+                          //deletes class from the remote API
                           _homeViewModel.deleteEvent(results[index]);
                           results.removeAt(index);
                           setState(() {
+                            //list is rewritten without ^ class
                             results = results;
                           });
                         },
@@ -73,11 +80,13 @@ class _BuilderFragmentState extends State<BuilderFragment> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => {
+          //when the + button is pressed on
           Navigator.of(context)
               .push(MaterialPageRoute(
                 builder: (context) => const FindEventPage(),
               ))
-              .then((value) => setState(() {}))
+              .then((value) => setState(
+                  () {})) //setState rebuilds ListView widget and displays new page
         },
       ),
     );

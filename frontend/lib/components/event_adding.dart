@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:uscheduler/models/course.dart';
 
 class EventAdding extends ChangeNotifier {
-  final List<Course> addedEvents = []; // List to store added events
-  List<Course> get events => addedEvents; // Getter to retrieve added events
+  final List<Course> addedEvents = []; //list of Courses
+  List<Course> get events => addedEvents; //getter function to access list of Courses
 
-  void addEvent(Course event) {
-    addedEvents.add(event); // Add the event to the list
+  void addEvent(Course event) { //method that adds Course to list
+    addedEvents.add(event);
 
-    notifyListeners(); // Notify listeners of the change
+    notifyListeners(); //notify changes are made
   }
 }
