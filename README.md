@@ -29,3 +29,7 @@ The product will have multiple features for students and/or club leaders to use.
 ### How to Build the App ###
 Please refer to the BUILD.md file to build the application.\
 [BUILD.md](BUILD.md)
+
+### API Documentation
+Our API documentation is available at this link:
+[API Documentation](https://docs.google.com/document/d/1-lIfwvMNkvebSSViFij7K3JWECE-p46-ozIx5t3ajCA/edit)
