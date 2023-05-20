@@ -183,5 +183,5 @@ def generateSchedules(jwt_data):
 
 
 # Run the Flask application
-if __name__ == 'main':
+if __name__ == '__main__':
     app.run(debug=True, port=3000)
