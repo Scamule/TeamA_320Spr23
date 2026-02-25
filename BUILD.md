@@ -5,7 +5,7 @@
 Clone project from GitHub:
 
 ```
-git clone https://github.com/SammyPie/TeamA_320Spr23
+git clone https://github.com/Scamule/TeamA_320Spr23.git
 cd TeamA_320Spr23
 ```
 
